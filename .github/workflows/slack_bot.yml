@@ -27,7 +27,7 @@ jobs:
         run: python slack_bot.py
 
       - name: Upload logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: slack_bot_logs
           path: slack_bot.log
