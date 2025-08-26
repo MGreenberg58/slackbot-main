@@ -5,11 +5,12 @@ import datetime
 import requests
 import os
 
+BOT_USER = "U09BZRB5LMQ"
+
 def reset_info():
 	info = {"start": datetime.datetime.now().timestamp()}
 	with open("info.json","w") as f:
 		json.dump(info,f)
-
 
 def fix(img_path):
 	from PIL import Image, ImageDraw
@@ -31,10 +32,9 @@ def fix(img_path):
 
 	output_image.save(img_path, 'PNG')
 
-
 def get_people(channel_id):
 	client = WebClient(token=os.getenv("SLACK_TOKEN"))
-	
+
 	if not os.path.isdir("profiles"):
 		os.makedirs("profiles")
 
@@ -42,6 +42,9 @@ def get_people(channel_id):
 		ppl = client.conversations_members(channel=channel_id)
 		people = {}
 		for u in ppl["members"]:
+			if u == BOT_USER:
+				continue
+
 			response = client.users_info(user=u)
 			people[response['user']['id']] = response['user']['real_name']
 			url = (response['user']['profile']['image_512'])
@@ -50,14 +53,12 @@ def get_people(channel_id):
 				file.write(r.content)
 			fix(f'profiles/{response["user"]["id"]}.png')
 
-
 		with open("people.json", "w") as f:
 			json.dump(people, f)
 		
 	
 	except SlackApiError as e:
 		print(f"Error: {e}")
-
 
 if __name__ == '__main__':
 	get_people(os.getenv("TESTING"))

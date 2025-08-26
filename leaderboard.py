@@ -8,7 +8,6 @@ import time
 import datetime
 import os
 from reset import get_people
-
 import logging
 
 logging.basicConfig(
@@ -16,8 +15,6 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s:%(levelname)s:%(message)s'
 )
-
-BOT_USER = "U09BZRB5LMQ"
 
 def parse_message(msg, start_time, end_time=None):
 	if end_time != None and end_time < float(msg['ts']):
@@ -33,7 +30,6 @@ def parse_message(msg, start_time, end_time=None):
 	workout += 1.5*len(re.findall("!lift", txt))+.5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
 	return people, throw, workout
 
-
 def make_leaderboard(users, info):
 	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
 	data = pd.read_csv("messages.csv").to_dict('records')
@@ -45,11 +41,9 @@ def make_leaderboard(users, info):
 				leaderboard[p]['throw'] += t
 				leaderboard[p]['gym'] += w
 		except:
-			if m['user'] != BOT_USER:
-				print(m)
-				logging.info(f"Invalid message {m}")
+			print(m)
+			logging.info(f"Invalid message {m}")
 	return leaderboard
-
 
 def get_throwing(users, start_time=None, end_time=None):
 	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
@@ -63,11 +57,9 @@ def get_throwing(users, start_time=None, end_time=None):
 			for p in people:
 				leaderboard[p]['throw'] += t
 		except:
-			if m['user'] != BOT_USER:
-				print(m)
-				logging.info(f"Invalid message {m}")
+			print(m)
+			logging.info(f"Invalid message {m}")
 	return leaderboard
-
 
 def display(leaderboard, users, typ=0):
 	df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
@@ -92,7 +84,8 @@ def display(leaderboard, users, typ=0):
 		x = row['gym']
 		y = row['throw']
 		try:
-			img = Image.open(f"profiles\\{row['id']}.png")
+			path = os.path.join("profiles", f"{row['id']}.png")
+			img = Image.open(path)
 			size = .04
 			ax.imshow(img, extent=[x - width*size, x + width*size, y - height*size, y + height*size], zorder=2)
 		except:
@@ -117,7 +110,6 @@ def display(leaderboard, users, typ=0):
 
 	return text
 
-
 def post_message(message, channel, thread=False, img=None):
 	client = WebClient(token=os.getenv("SLACK_TOKEN"))
 	try:
@@ -135,7 +127,6 @@ def post_message(message, channel, thread=False, img=None):
 	except SlackApiError as e:
 		print(f"Error: {e}")
 		logging.info(f"Slack Error {e}")
-
 
 def post_throwers(leaderboard, users, channel):
 
@@ -156,7 +147,6 @@ def post_throwers(leaderboard, users, channel):
 	post_message(s1, channel)
 	time.sleep(4)
 	post_message(s2, channel, True)
-
 
 def report_captains(channel):
 	if not os.path.exists("people.json"):
@@ -187,7 +177,6 @@ def report_captains(channel):
 	time.sleep(4)
 	post_message(s2, channel, True)
 
-
 def display_leaderboard(channel):
 	if not os.path.exists("people.json"):
 		get_people(os.getenv("TESTING"))
@@ -205,7 +194,6 @@ def display_leaderboard(channel):
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
 
-
 def remind_throwers(channel):
 	if not os.path.exists("people.json"):
 		get_people(os.getenv("TESTING"))
@@ -213,7 +201,6 @@ def remind_throwers(channel):
 		users = json.load(f)
 	l = get_throwing(users)
 	post_throwers(l, users, channel)
-
 
 if __name__ == '__main__':
 	display_leaderboard(os.getenv("TESTING"))
