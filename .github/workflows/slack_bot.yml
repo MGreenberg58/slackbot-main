@@ -24,7 +24,7 @@ jobs:
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           TESTING: ${{ secrets.TESTING }}
-        run: python slack_bot.py
+        run: python bot.py
 
       - name: Upload logs
         uses: actions/upload-artifact@v4
