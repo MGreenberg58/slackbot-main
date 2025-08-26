@@ -83,9 +83,8 @@ if __name__ == "__main__":
         weekday = datetime.datetime.today().weekday()
         # if weekday == 5:
         remind_throwers(CHANNEL)
-        # if weekday in [0,3]:
-        display_leaderboard(CHANNEL)
         # if weekday == 0:
+        display_leaderboard(CHANNEL)
         report_captains(CHANNEL)
         logging.info("Slack bot run completed successfully")
     except Exception as e:

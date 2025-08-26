@@ -34,6 +34,9 @@ def fix(img_path):
 
 def get_people(channel_id):
 	client = WebClient(token=os.getenv("SLACK_TOKEN"))
+	
+	if not os.path.isdir("profiles"):
+		os.makedirs("profiles")
 
 	try:
 		ppl = client.conversations_members(channel=channel_id)

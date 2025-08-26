@@ -9,6 +9,8 @@ import datetime
 import os
 from reset import get_people
 
+BOT_USER = "U09BZRB5LMQ"
+
 def parse_message(msg, start_time, end_time=None):
 	if end_time != None and end_time < float(msg['ts']):
 		return [],0,0
@@ -35,7 +37,7 @@ def make_leaderboard(users, info):
 				leaderboard[p]['throw'] += t
 				leaderboard[p]['gym'] += w
 		except:
-			if m['user'] != 'U05QT32S929':
+			if m['user'] != BOT_USER:
 				print(m)
 	return leaderboard
 
@@ -52,7 +54,7 @@ def get_throwing(users, start_time=None, end_time=None):
 			for p in people:
 				leaderboard[p]['throw'] += t
 		except:
-			if m['user'] != 'U05QT32S929':
+			if m['user'] != BOT_USER:
 				print(m)
 	return leaderboard
 
@@ -72,6 +74,9 @@ def display(leaderboard, users, typ=0):
 
 	width = ax.get_xlim()[1]-ax.get_xlim()[0]
 	height = ax.get_ylim()[1]-ax.get_ylim()[0]
+
+	if not os.path.isdir("profiles"):
+		get_people(os.getenv("TESTING"))
 
 	for i,row in df.iterrows():
 		x = row['gym']
