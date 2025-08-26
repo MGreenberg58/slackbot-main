@@ -17,9 +17,6 @@ from leaderboard import display_leaderboard, remind_throwers, report_captains
 TOKEN = os.getenv("SLACK_TOKEN")
 CHANNEL = os.getenv("TESTING")
 
-logging.info(f"TOKEN: {TOKEN[:10]}...")  # don’t log full token
-logging.info(f"CHANNEL: {CHANNEL}")
-
 def get_selfies_messages(channel_id, days=7, limit=250, cursor=None):
     client = WebClient(token=TOKEN)
     try:

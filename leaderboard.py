@@ -9,6 +9,14 @@ import datetime
 import os
 from reset import get_people
 
+import logging
+
+logging.basicConfig(
+    filename="slack_bot.log",
+    level=logging.INFO,
+    format='%(asctime)s:%(levelname)s:%(message)s'
+)
+
 BOT_USER = "U09BZRB5LMQ"
 
 def parse_message(msg, start_time, end_time=None):
@@ -39,6 +47,7 @@ def make_leaderboard(users, info):
 		except:
 			if m['user'] != BOT_USER:
 				print(m)
+				logging.info(f"Invalid message {m}")
 	return leaderboard
 
 
@@ -56,6 +65,7 @@ def get_throwing(users, start_time=None, end_time=None):
 		except:
 			if m['user'] != BOT_USER:
 				print(m)
+				logging.info(f"Invalid message {m}")
 	return leaderboard
 
 
@@ -86,7 +96,7 @@ def display(leaderboard, users, typ=0):
 			size = .04
 			ax.imshow(img, extent=[x - width*size, x + width*size, y - height*size, y + height*size], zorder=2)
 		except:
-			print("failed")
+			logging.info("Leaderboard Creation Failed")
 			
 	ax.set_aspect('auto')
 	plt.tight_layout()
@@ -124,6 +134,7 @@ def post_message(message, channel, thread=False, img=None):
 			client.chat_postMessage(channel=channel, text=message)
 	except SlackApiError as e:
 		print(f"Error: {e}")
+		logging.info(f"Slack Error {e}")
 
 
 def post_throwers(leaderboard, users, channel):
