@@ -7,7 +7,7 @@ from PIL import Image
 import time
 import datetime
 import os
-
+from reset import get_people
 
 def parse_message(msg, start_time, end_time=None):
 	if end_time != None and end_time < float(msg['ts']):
@@ -143,6 +143,9 @@ def post_throwers(leaderboard, users, channel):
 
 
 def report_captains(channel):
+	if not os.path.exists("people.json"):
+		get_people(os.getenv("TESTING"))
+
 	with open("people.json", "r") as f:
 		users = json.load(f)
 	now = datetime.datetime.now()-datetime.timedelta(days=4)
@@ -170,10 +173,14 @@ def report_captains(channel):
 
 
 def display_leaderboard(channel):
+	if not os.path.exists("people.json"):
+		get_people(os.getenv("TESTING"))
 	with open("people.json", "r") as f:
 		users = json.load(f)
+
 	with open("info.json", "r") as f:
 		info = json.load(f)
+
 	l = make_leaderboard(users, info)
 	s1 = display(l, users, 0)
 	s2 = display(l, users, 1)
