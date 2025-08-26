@@ -31,11 +31,14 @@ jobs:
           name: reset_logs
           path: reset.log
 
-      - name: Commit updated files
+      - name: Commit updated JSON files
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add info.json people.json
-          git commit -m "[BOT] Update info and people files automatically"
-          git push
+          git commit -m "[BOT] Update JSON files automatically" || echo "No changes to commit"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
