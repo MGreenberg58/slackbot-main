@@ -1,0 +1,34 @@
+name: Slack Bot Scheduler
+
+on:
+  schedule:
+    - cron: '0 14 * * *'  # every day at 9 am
+  workflow_dispatch:  # allows manual run from GitHub UI
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Slack Bot
+        env:
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          TESTING: ${{ secrets.TESTING }}
+        run: python bot.py
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slack_bot_logs
+          path: slack_bot.log
