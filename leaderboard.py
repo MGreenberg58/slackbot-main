@@ -6,10 +6,8 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import time
 import datetime
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
 
 def parse_message(msg, start_time, end_time=None):
 	if end_time != None and end_time < float(msg['ts']):
