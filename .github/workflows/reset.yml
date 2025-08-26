@@ -1,8 +1,6 @@
-name: Slack Bot Scheduler
+name: Reset Scores
 
 on:
-  schedule:
-    - cron: '0 14 * * *'  # every day at 9 am
   workflow_dispatch:  # allows manual run from GitHub UI
 
 jobs:
@@ -20,15 +18,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Slack Bot
+      - name: Run Reset
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           TESTING: ${{ secrets.TESTING }}
-        run: python bot.py
+        run: python reset.py
 
       - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: slack_bot_logs
-          path: slack_bot.log
+          name: reset_logs
+          path: reset.log
