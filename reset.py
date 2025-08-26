@@ -4,6 +4,13 @@ import json
 import datetime
 import requests
 import os
+import logging
+
+logging.basicConfig(
+    filename="reset.log",
+    level=logging.INFO,
+    format='%(asctime)s:%(levelname)s:%(message)s'
+)
 
 BOT_USER = "U09BZRB5LMQ"
 
@@ -59,6 +66,7 @@ def get_people(channel_id):
 		
 	except SlackApiError as e:
 		print(f"Error: {e}")
+		logging.error(f"Slack API error: {e}")
 
 if __name__ == '__main__':
 	get_people(os.getenv("TESTING"))
