@@ -1,5 +1,4 @@
 .env
-people.json
 messages.csv
 slack_bot.log
 *.pyc
