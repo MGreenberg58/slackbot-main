@@ -1,14 +1,18 @@
+import logging
+
+logging.basicConfig(
+    filename="slack_bot.log",
+    level=logging.INFO,
+    format='%(asctime)s:%(levelname)s:%(message)s'
+)
+logging.info("Slack bot started")
+
 import os
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import datetime, time
 import pandas as pd
 from leaderboard import display_leaderboard, remind_throwers, report_captains
-import logging
-
-# Configure logging
-logging.basicConfig(filename="slack_bot.log", level=logging.INFO,
-                    format='%(asctime)s:%(levelname)s:%(message)s')
 
 TOKEN = os.getenv("SLACK_TOKEN")
 CHANNEL = os.getenv("TESTING")
@@ -83,3 +87,4 @@ if __name__ == "__main__":
         logging.info("Slack bot run completed successfully")
     except Exception as e:
         logging.error(f"Error running bot: {e}")
+        raise
