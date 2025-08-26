@@ -30,3 +30,12 @@ jobs:
         with:
           name: reset_logs
           path: reset.log
+
+      - name: Commit updated files
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add info.json people.json
+          git commit -m "[BOT] Update info and people files automatically"
+          git push
+
