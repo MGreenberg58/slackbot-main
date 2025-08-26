@@ -20,6 +20,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Check env
+        run: |
+          echo "TOKEN: ${SLACK_TOKEN:0:10}..."
+          echo "CHANNEL: $TESTING"
+
       - name: Run Slack Bot
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
