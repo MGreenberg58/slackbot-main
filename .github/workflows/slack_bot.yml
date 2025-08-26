@@ -23,7 +23,7 @@ jobs:
       - name: Run Slack Bot
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          SLACK_CHANNEL_ID: ${{ secrets.TESTING }}
+          TESTING: ${{ secrets.TESTING }}
         run: python slack_bot.py
 
       - name: Upload logs

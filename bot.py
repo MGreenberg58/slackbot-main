@@ -65,6 +65,11 @@ def paginate(channel_id, days=90, limit=200):
     return df
 
 if __name__ == "__main__":
+    if not TOKEN:
+        raise ValueError("SLACK_TOKEN is missing!")
+    if not CHANNEL:
+        raise ValueError("SLACK_CHANNEL_ID is missing!")
+
     try:
         df = paginate(CHANNEL, 7)
         write(df)
