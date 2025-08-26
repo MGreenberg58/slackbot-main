@@ -191,6 +191,8 @@ def display_leaderboard(channel):
 
 
 def remind_throwers(channel):
+	if not os.path.exists("people.json"):
+		get_people(os.getenv("TESTING"))
 	with open("people.json", "r") as f:
 		users = json.load(f)
 	l = get_throwing(users)
