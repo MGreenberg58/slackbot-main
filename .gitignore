@@ -2,3 +2,5 @@
 people.json
 messages.csv
 info.json
+slack_bot.log
+*.pyc

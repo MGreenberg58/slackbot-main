@@ -3,10 +3,7 @@ from slack_sdk.errors import SlackApiError
 import json
 import datetime
 import requests
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 def reset_info():
 	info = {"start": datetime.datetime.now().timestamp()}
@@ -36,7 +33,7 @@ def fix(img_path):
 
 
 def get_people(channel_id):
-	client = WebClient(token=os.getenv("token"))
+	client = WebClient(token=os.getenv("SLACK_TOKEN"))
 
 	try:
 		ppl = client.conversations_members(channel=channel_id)
@@ -60,5 +57,5 @@ def get_people(channel_id):
 
 
 if __name__ == '__main__':
-	get_people(os.getenv("testing"))
+	get_people(os.getenv("TESTING"))
 	reset_info()

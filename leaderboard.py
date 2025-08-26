@@ -106,7 +106,7 @@ def display(leaderboard, users, typ=0):
 
 
 def post_message(message, channel, thread=False, img=None):
-	client = WebClient(token=os.getenv("token"))
+	client = WebClient(token=os.getenv("SLACK_TOKEN"))
 	try:
 		if thread:
 			response = client.conversations_history(channel=channel,limit=1)
@@ -193,7 +193,7 @@ def remind_throwers(channel):
 
 
 if __name__ == '__main__':
-	display_leaderboard(os.getenv("testing"))
-	remind_throwers(os.getenv("testing"))
-	report_captains(os.getenv("testing"))
+	display_leaderboard(os.getenv("TESTING"))
+	remind_throwers(os.getenv("TESTING"))
+	report_captains(os.getenv("TESTING"))
 	pass
