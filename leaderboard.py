@@ -58,9 +58,9 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None, end
         cmap=cmap
     )
 
-	ax.imshow(grad, extent=[0, 1, -0.2, 0.2], aspect="auto", cmap=cmap)
-	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)
+	ax.imshow(grad, extent=[0, [progress_clamped], -0.2, 0.2], aspect="auto", cmap=cmap)
 	ax.barh([0], [progress_clamped], color="none", edgecolor="black", height=0.4)
+	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)
 
 	ax.set_xlim(0, 1)
 	ax.set_yticks([])
