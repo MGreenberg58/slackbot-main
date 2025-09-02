@@ -48,7 +48,7 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None, end
         "progress_cmap", ["red", "yellow", "green"]
     )
 
-	fig, ax = plt.subplots(figsize=(6, 1), dpi=200, constrained_layouts=True)
+	fig, ax = plt.subplots(figsize=(6, 1), dpi=200, layout='tight')
 	ax.barh([0], [progress_clamped], color=cmap, height=0.4)
 	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)  
 
