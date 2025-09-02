@@ -3,12 +3,14 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from PIL import Image
 import time
 import datetime
 import os
 from reset import get_people
 import logging
+
 
 logging.basicConfig(
     filename="slack_bot.log",
@@ -30,35 +32,65 @@ def parse_message(msg, start_time, end_time=None):
 	workout += 1.5*len(re.findall("!lift", txt))+.5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
 	return people, throw, workout
 
-def make_leaderboard(users, info):
+def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None, end=None): # Weekly goal is 4 "points" if 60mins throwing is 2pts
+	total = 0
+	if metric == 'throw' or metric is None:
+		total += sum([leaderboard[u]['throw'] for u in leaderboard]) * 2 / 60 # Normalizing so that gym and throwing are scored 50/50 in progress
+	if metric == 'gym' or metric is None:
+		total += sum([leaderboard[u]['gym'] for u in leaderboard])
+
+	goal = len(users) * weekly_goal
+
+	progress = total / goal if goal > 0 else 0
+	progress_clamped = min(progress, 1.0)
+
+	cmap = mcolors.LinearSegmentedColormap.from_list(
+        "progress_cmap", ["red", "yellow", "green"]
+    )
+	color = cmap(min(progress / 1.0, 1.0))  
+
+	fig, ax = plt.subplots(figsize=(6, 1), dpi=200)
+	ax.barh([0], [progress_clamped], color=color, height=0.4)
+	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)  
+
+	ax.set_xlim(0, 1)
+	ax.set_yticks([])
+	ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
+	ax.set_xticklabels([f"{int(x*100)}%" for x in [0, 0.25, 0.5, 0.75, 1.0]])
+
+	ax.set_title("Team Weekly Progress", fontsize=10)
+	ax.text(0.5, 0.7, f"{total * 100 / goal} / 100", ha="center", va="bottom", fontsize=9)
+
+	plt.tight_layout()
+	fig.savefig("progress.jpg")
+	plt.close(fig)
+
+	return f"*Team Progress:* {int(progress*100)}% of goal reached"
+
+def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None):
 	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
 	data = pd.read_csv("messages.csv").to_dict('records')
 
-	for m in data:
-		try:
-			people,t,w = parse_message(m, info['start'])
-			for p in people:
-				leaderboard[p]['throw'] += t
-				leaderboard[p]['gym'] += w
-		except:
-			print(m)
-			logging.info(f"Invalid message {m}")
-	return leaderboard
-
-def get_throwing(users, start_time=None, end_time=None):
-	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
-	data = pd.read_csv("messages.csv").to_dict('records')
 	if start_time == None:
 		now = datetime.datetime.now()
 		start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
+		
 	for m in data:
 		try:
-			people,t,w = parse_message(m, start_time, end_time)
+			if info:
+				people,t,w = parse_message(m, info['start'])
+			else:
+				people,t,w = parse_message(m, start_time, end_time)
+
 			for p in people:
-				leaderboard[p]['throw'] += t
+				if metrics == 'throw' or metrics is None:
+					leaderboard[p]['throw'] += t
+				if metrics == 'gym' or metrics is None:
+					leaderboard[p]['gym'] += w
 		except:
 			print(m)
 			logging.info(f"Invalid message {m}")
+
 	return leaderboard
 
 def display(leaderboard, users, typ=0):
@@ -116,11 +148,11 @@ def post_message(message, channel, thread=False, img=None):
 		if thread:
 			response = client.conversations_history(channel=channel,limit=1)
 			client.chat_postMessage(channel=channel, text=message, thread_ts=response['messages'][0]['ts'])
-		elif img!=None:
+		elif img != None:
 			client.files_upload_v2(
           	channel=channel,
 			initial_comment=message,
-	 	 	file="plot.jpg",
+	 	 	file=img,
     	)
 		else:
 			client.chat_postMessage(channel=channel, text=message)
@@ -129,7 +161,6 @@ def post_message(message, channel, thread=False, img=None):
 		logging.info(f"Slack Error {e}")
 
 def post_throwers(leaderboard, users, channel):
-
 	df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
 	df['name'] = df.apply(lambda x: users[x['id']], axis=1)
 	df = df.sort_values("throw", ascending=False)
@@ -157,7 +188,8 @@ def report_captains(channel):
 	now = datetime.datetime.now()-datetime.timedelta(days=4)
 	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
 	end_time = (start_time+datetime.timedelta(days=7)-datetime.timedelta(microseconds=1))
-	leaderboard = get_throwing(users, start_time.timestamp(), end_time.timestamp())
+
+	leaderboard = get_metrics(users, start_time.timestamp(), end_time.timestamp(), metrics='throw')
 
 	df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
 
@@ -186,7 +218,7 @@ def display_leaderboard(channel):
 	with open("info.json", "r") as f:
 		info = json.load(f)
 
-	l = make_leaderboard(users, info)
+	l = get_metrics(users, info)
 	s1 = display(l, users, 0)
 	s2 = display(l, users, 1)
 	post_message("Leaderboard Update", channel, False, "plot.jpg")
@@ -197,10 +229,14 @@ def display_leaderboard(channel):
 def remind_throwers(channel):
 	if not os.path.exists("people.json"):
 		get_people(os.getenv("TESTING"))
+
 	with open("people.json", "r") as f:
 		users = json.load(f)
-	l = get_throwing(users)
+	
+	l = get_metrics(users, metrics='throw')
 	post_throwers(l, users, channel)
+	time.sleep(4)
+	post_message(get_weekly_progress_throwing(l, users), channel, False, "progress.jpg")
 
 if __name__ == '__main__':
 	display_leaderboard(os.getenv("TESTING"))
