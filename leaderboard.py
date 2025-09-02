@@ -236,7 +236,7 @@ def remind_throwers(channel):
 	l = get_metrics(users, metrics='throw')
 	post_throwers(l, users, channel)
 	time.sleep(4)
-	post_message(get_weekly_progress_throwing(l, users), channel, False, "progress.jpg")
+	post_message(get_progress(l, users), channel, False, "progress.jpg")
 
 if __name__ == '__main__':
 	display_leaderboard(os.getenv("TESTING"))
