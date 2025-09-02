@@ -178,13 +178,14 @@ def post_throwers(leaderboard, users, channel):
 	b = df.iloc[0]['id']
 	c = df.iloc[0]['throw']
 	s1 = f"*Weekly Throwing Update - 1 day left!*\nOverall Progress: {a}/{len(df.index)} reached 60 minutes\n{df['throw'].sum()} total minutes of throwing\n"
-	s1 += f":star2: thrower: <@{b}> with {c} minutes"
+	s1 += f":star2: thrower: <@{b}> with {c} minutes\n"
+	s1 += get_progress(leaderboard, users)
 
 	s2 = "*Under 60 minutes:*"
 	for i,row in df[df['throw']<60].iterrows():
 		s2 += f"\n<@{row['id']}> - {60-row['throw']} minutes left"
 
-	post_message(s1, channel)
+	post_message(s1, channel, "progress.jpg")
 	time.sleep(4)
 	post_message(s2, channel, True)
 
@@ -230,7 +231,7 @@ def display_leaderboard(channel):
 	l = get_metrics(users, info)
 	s1 = display(l, users, 0)
 	s2 = display(l, users, 1)
-	post_message("Leaderboard Update", channel, False, "plot.jpg")
+	post_message("*Leaderboard Update*", channel, False, "plot.jpg")
 	time.sleep(4)
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
@@ -244,8 +245,7 @@ def remind_throwers(channel):
 	
 	l = get_metrics(users, metrics='throw')
 	post_throwers(l, users, channel)
-	time.sleep(4)
-	post_message(get_progress(l, users), channel, False, "progress.jpg")
+	
 
 if __name__ == '__main__':
 	display_leaderboard(os.getenv("TESTING"))
