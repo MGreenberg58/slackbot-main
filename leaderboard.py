@@ -49,8 +49,15 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None, end
         "progress_cmap", ["red", "yellow", "green"]
     )
 
-	fig, ax = plt.subplots(figsize=(6, 1), dpi=200, layout='tight')
+	fig, ax = plt.subplots(figsize=(6, 2), dpi=200, layout='tight')
 	grad = np.linspace(0, 1, 256).reshape(1, -1)
+	ax.imshow(
+        grad,
+        extent=[0, progress_clamped, -0.2, 0.2],  # only fill up to progress
+        aspect="auto",
+        cmap=cmap
+    )
+
 	ax.imshow(grad, extent=[0, 1, -0.2, 0.2], aspect="auto", cmap=cmap)
 	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)
 	ax.barh([0], [progress_clamped], color="none", edgecolor="black", height=0.4)
