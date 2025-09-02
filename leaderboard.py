@@ -33,7 +33,7 @@ def parse_message(msg, start_time, end_time=None):
 	workout += 1.5*len(re.findall("!lift", txt))+.5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
 	return people, throw, workout
 
-def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None, end=None): # Weekly goal is 4 "points" if 60mins throwing is 2pts
+def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # Weekly goal is 4 "points" if 60mins throwing is 2pts
 	total = 0
 	if metric == 'throw' or metric is None:
 		total += sum([leaderboard[u]['throw'] for u in leaderboard]) * 2 / 60 # Normalizing so that gym and throwing are scored 50/50 in progress
@@ -235,6 +235,8 @@ def display_leaderboard(channel):
 	time.sleep(4)
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
+	time.sleep(4)
+	post_message(get_progress(l, users, channel))
 
 def remind_throwers(channel):
 	if not os.path.exists("people.json"):
@@ -243,7 +245,11 @@ def remind_throwers(channel):
 	with open("people.json", "r") as f:
 		users = json.load(f)
 	
-	l = get_metrics(users, metrics='throw')
+	now = datetime.datetime.now()-datetime.timedelta(days=4)
+	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
+	end_time = (start_time+datetime.timedelta(days=7)-datetime.timedelta(microseconds=1))
+
+	l = get_metrics(users, start_time.timestamp(), end_time.timestamp(), metrics='throw')
 	post_throwers(l, users, channel)
 	
 
