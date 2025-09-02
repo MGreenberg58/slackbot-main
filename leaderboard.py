@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from PIL import Image
+import numpy as np
 import time
 import datetime
 import os
@@ -49,8 +50,10 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None, end
     )
 
 	fig, ax = plt.subplots(figsize=(6, 1), dpi=200, layout='tight')
-	ax.barh([0], [progress_clamped], color=cmap, height=0.4)
-	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)  
+	grad = np.linspace(0, 1, 256).reshape(1, -1)
+	ax.imshow(grad, extent=[0, 1, -0.2, 0.2], aspect="auto", cmap=cmap)
+	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)
+	ax.barh([0], [progress_clamped], color="none", edgecolor="black", height=0.4)
 
 	ax.set_xlim(0, 1)
 	ax.set_yticks([])
