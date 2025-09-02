@@ -58,7 +58,7 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None, end
         cmap=cmap
     )
 
-	ax.imshow(grad, extent=[0, [progress_clamped], -0.2, 0.2], aspect="auto", cmap=cmap)
+	ax.imshow(grad, extent=[0, progress_clamped, -0.2, 0.2], aspect="auto", cmap=cmap)
 	ax.barh([0], [progress_clamped], color="none", edgecolor="black", height=0.4)
 	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)
 
@@ -67,7 +67,7 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None, end
 	ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
 	ax.set_xticklabels([f"{int(x*100)}%" for x in [0, 0.25, 0.5, 0.75, 1.0]])
 
-	ax.set_title("Team Weekly Progress", fontsize=10)
+	ax.set_title("Team Weekly Throwing/Workout Progress", fontsize=10)
 	ax.text(0.5, 0.7, f"{total * 100 / goal} / 100", ha="center", va="bottom", fontsize=9)
 
 	plt.tight_layout()
