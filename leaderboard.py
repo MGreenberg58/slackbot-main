@@ -185,7 +185,7 @@ def post_throwers(leaderboard, users, channel):
 	for i,row in df[df['throw']<60].iterrows():
 		s2 += f"\n<@{row['id']}> - {60-row['throw']} minutes left"
 
-	post_message(s1, channel, "progress.jpg")
+	post_message(s1, channel, False, "progress.jpg")
 	time.sleep(4)
 	post_message(s2, channel, True)
 
@@ -236,7 +236,7 @@ def display_leaderboard(channel):
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
 	time.sleep(4)
-	post_message(get_progress(l, users, channel))
+	post_message(get_progress(l, users))
 
 def remind_throwers(channel):
 	if not os.path.exists("people.json"):
