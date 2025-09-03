@@ -82,7 +82,7 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # 
 
 	return f"*Team {title} Progress:* {int(progress*100)}% of goal reached"
 
-def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None):
+def get_metrics(users, cap=False, info=None, start_time=None, end_time=None, metrics=None):
 	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
 	data = pd.read_csv("messages.csv").to_dict('records')
 
@@ -99,9 +99,9 @@ def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None):
 
 			for p in people:
 				if metrics == 'throw' or metrics is None:
-					leaderboard[p]['throw'] += t
+					leaderboard[p]['throw'] += min(t, 60) if cap else t
 				if metrics == 'gym' or metrics is None:
-					leaderboard[p]['gym'] += w
+					leaderboard[p]['gym'] += min(w, 4.5) if cap else w
 		except:
 			print(m)
 			logging.info(f"Invalid message {m}")
@@ -266,7 +266,7 @@ def remind_throwers(channel):
 	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
 	end_time = (start_time+datetime.timedelta(days=7)-datetime.timedelta(microseconds=1))
 
-	l = get_metrics(users, start_time.timestamp(), end_time.timestamp(), metrics='throw')
+	l = get_metrics(users, cap=True, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
 	post_throwers(l, users, channel)
 	
 
