@@ -160,6 +160,7 @@ def display(leaderboard, users, typ=0):
 def post_message(message, channel, thread=False, img=None):
 	client = WebClient(token=os.getenv("SLACK_TOKEN"))
 	try:
+		response = client.conversations_history(channel=channel,limit=1)
 		if img is not None:
 			if thread:
 				client.files_upload_v2(
@@ -174,7 +175,6 @@ def post_message(message, channel, thread=False, img=None):
 				file=img)
 
 		if thread:
-			response = client.conversations_history(channel=channel,limit=1)
 			client.chat_postMessage(channel=channel, text=message, thread_ts=response['messages'][0]['ts'])
 		
 		if img is None and not thread:
