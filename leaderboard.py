@@ -174,7 +174,7 @@ def post_message(message, channel, thread=False, img=None):
 				initial_comment=message,
 				file=img)
 
-		if thread:
+		if img is None and thread:
 			client.chat_postMessage(channel=channel, text=message, thread_ts=response['messages'][0]['ts'])
 		
 		if img is None and not thread:
