@@ -64,8 +64,8 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # 
 
 	ax.set_xlim(0, 1)
 	ax.set_yticks([])
-	ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-	ax.set_xticklabels([f"{int(x*100)}%" for x in [0, 0.25, 0.5, 0.75, 1.0]])
+	ax.set_xticks([0.5, 0.75, 1.0, 1.25])
+	ax.set_xticklabels([f"{int(x*100)}%" for x in [0.5, 0.75, 1.0, 1.25]])
 
 	title = ""
 	if start is None:
