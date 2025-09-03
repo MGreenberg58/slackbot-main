@@ -244,7 +244,7 @@ def display_leaderboard(channel):
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
 	time.sleep(4)
-	post_message(get_progress(l, users), channel, "progress.jpg")
+	post_message(get_progress(l, users), channel, True, "progress.jpg")
 
 def remind_throwers(channel):
 	if not os.path.exists("people.json"):
