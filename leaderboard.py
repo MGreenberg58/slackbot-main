@@ -67,7 +67,13 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # 
 	ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
 	ax.set_xticklabels([f"{int(x*100)}%" for x in [0, 0.25, 0.5, 0.75, 1.0]])
 
-	ax.set_title("Team Weekly Throwing/Workout Progress", fontsize=10)
+	title = ""
+	if start is None:
+		title += "Semester"
+	else:
+		title += "Weekly"
+		
+	ax.set_title(f"Team {title} Throwing/Workout Progress", fontsize=10)
 	ax.text(0.5, 0.7, f"{total * 100 / goal} / 100", ha="center", va="bottom", fontsize=9)
 
 	plt.tight_layout()
@@ -236,7 +242,7 @@ def display_leaderboard(channel):
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
 	time.sleep(4)
-	post_message(get_progress(l, users), channel)
+	post_message(get_progress(l, users), channel, "progress.jpg")
 
 def remind_throwers(channel):
 	if not os.path.exists("people.json"):
