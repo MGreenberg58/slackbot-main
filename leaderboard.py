@@ -163,13 +163,13 @@ def post_message(message, channel, thread=False, img=None):
 		if thread:
 			response = client.conversations_history(channel=channel,limit=1)
 			client.chat_postMessage(channel=channel, text=message, thread_ts=response['messages'][0]['ts'])
-		elif img != None:
+		if img is not None:
 			client.files_upload_v2(
           	channel=channel,
 			initial_comment=message,
-	 	 	file=img,
-    	)
-		else:
+	 	 	file=img)
+		
+		if img is None and not thread:
 			client.chat_postMessage(channel=channel, text=message)
 	except SlackApiError as e:
 		print(f"Error: {e}")
