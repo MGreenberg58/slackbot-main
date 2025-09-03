@@ -80,7 +80,7 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # 
 	fig.savefig("progress.jpg")
 	plt.close(fig)
 
-	return f"*Team Progress:* {int(progress*100)}% of goal reached"
+	return f"*Team {title} Progress:* {int(progress*100)}% of goal reached"
 
 def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None):
 	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
@@ -191,6 +191,7 @@ def post_throwers(leaderboard, users, channel):
 	for i,row in df[df['throw']<60].iterrows():
 		s2 += f"\n<@{row['id']}> - {60-row['throw']} minutes left"
 
+	time.sleep(4)
 	post_message(s1, channel, False, "progress.jpg")
 	time.sleep(4)
 	post_message(s2, channel, True)
@@ -221,6 +222,7 @@ def report_captains(channel):
 				j = False
 			else:
 				s2 += f"\n*{users[row['id']]}* - {row['throw']} minutes thrown"
+
 	post_message(s1, channel)
 	time.sleep(4)
 	post_message(s2, channel, True)
