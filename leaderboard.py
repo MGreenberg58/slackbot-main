@@ -46,7 +46,7 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, isWeekly=False)
 
 	cmap = mcolors.LinearSegmentedColormap.from_list(
     "progress_cmap",
-    [(0.0, "red"),     # 0%
+    	[(0.0, "red"),    # 0%
         (0.5, "red"),     # stays red until 50%
         (0.75, "yellow"), # fades to yellow by 75%
         (1.0, "green")]   # ends green
@@ -202,7 +202,7 @@ def post_throwers(leaderboard, users, channel):
 	c = df.iloc[0]['throw']
 	s1 = f"*Weekly Throwing Update - 1 day left!*\nOverall Progress: {a}/{len(df.index)} reached 60 minutes\n{df['throw'].sum()} total minutes of throwing\n"
 	s1 += f":star2: thrower: <@{b}> with {c} minutes\n"
-	s1 += get_progress(leaderboard, users, isWeekly=True)
+	s1 += get_progress(leaderboard, users, weekly_goal=2, metric='throw', isWeekly=True) # 2 pts is 60 mins
 
 	s2 = "*Under 60 minutes:*"
 	for i,row in df[df['throw']<60].iterrows():
