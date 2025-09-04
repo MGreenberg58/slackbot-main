@@ -48,7 +48,10 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, isWeekly=False)
         "progress_cmap", ["red", "yellow", "green"]
     )
 
-	MAX_PROG = 1.25
+	MAX_PROG = 1
+	if not isWeekly:
+		MAX_PROG = 1.25
+		
 	fig, ax = plt.subplots(figsize=(6, 2), dpi=200, layout='tight')
 	grad = np.linspace(0, MAX_PROG, 256).reshape(1, -1)
 	ax.imshow(
