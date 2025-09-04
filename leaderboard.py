@@ -44,17 +44,17 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, isWeekly=False)
 
 	progress = total / goal if goal > 0 else 0
 
-	cmap = mcolors.LinearSegmentedColormap.from_list(
-    "progress_cmap",
-    	[(0.0, "red"),    # 0%
-        (0.5, "red"),     # stays red until 50%
-        (0.75, "yellow"), # fades to yellow by 75%
-        (1.0, "green")]   # ends green
-	)
-
 	MAX_PROG = 1
 	if not isWeekly:
 		MAX_PROG = 1.25
+
+	cmap = mcolors.LinearSegmentedColormap.from_list(
+    "progress_cmap",
+    	[(0.0, "red"),    
+        (0.4, "red"),    
+        (0.7, "yellow"), 
+        (1.0, "green")]   # ends green
+	)
 
 	fig, ax = plt.subplots(figsize=(6, 2), dpi=200, layout='tight')
 	grad = np.linspace(0, MAX_PROG, 256).reshape(1, -1)
@@ -275,6 +275,7 @@ def remind_throwers(channel):
 	end_time = start_time + datetime.timedelta(days=7) - datetime.timedelta(microseconds=1)
 
 	l = get_metrics(users, cap=True, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
+	print(l)
 	post_throwers(l, users, channel)
 	
 
