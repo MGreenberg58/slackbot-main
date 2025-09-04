@@ -51,7 +51,7 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, isWeekly=False)
 	MAX_PROG = 1
 	if not isWeekly:
 		MAX_PROG = 1.25
-		
+
 	fig, ax = plt.subplots(figsize=(6, 2), dpi=200, layout='tight')
 	grad = np.linspace(0, MAX_PROG, 256).reshape(1, -1)
 	ax.imshow(
@@ -266,9 +266,9 @@ def remind_throwers(channel):
 	with open("people.json", "r") as f:
 		users = json.load(f)
 	
-	now = datetime.datetime.now()-datetime.timedelta(days=4)
+	now = datetime.datetime.now()
 	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
-	end_time = (start_time+datetime.timedelta(days=7)-datetime.timedelta(microseconds=1))
+	end_time = start_time + datetime.timedelta(days=7) - datetime.timedelta(microseconds=1)
 
 	l = get_metrics(users, cap=True, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
 	post_throwers(l, users, channel)
