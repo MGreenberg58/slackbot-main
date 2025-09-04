@@ -107,12 +107,17 @@ def get_metrics(users, cap=False, info=None, start_time=None, end_time=None, met
 
 			for p in people:
 				if metrics == 'throw' or metrics is None:
-					leaderboard[p]['throw'] += min(t, 60) if cap else t
+					leaderboard[p]['throw'] += t
+					if cap:
+						leaderboard[p]['throw'] = min(leaderboard[p]['throw'], 60)
+
 				if metrics == 'gym' or metrics is None:
-					leaderboard[p]['gym'] += min(w, 3.5) if cap else w
-		except:
-			print(m)
-			logging.info(f"Invalid message {m}")
+					leaderboard[p]['gym'] += w
+					if cap:
+						leaderboard[p]['gym'] = min(leaderboard[p]['gym'], 3.5)
+						
+		except Exception as e:
+			logging.info(f"Invalid message {m} - {e}")
 
 	return leaderboard
 
@@ -275,7 +280,6 @@ def remind_throwers(channel):
 	end_time = start_time + datetime.timedelta(days=7) - datetime.timedelta(microseconds=1)
 
 	l = get_metrics(users, cap=True, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
-	print(l)
 	post_throwers(l, users, channel)
 	
 
