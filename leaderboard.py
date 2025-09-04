@@ -33,7 +33,7 @@ def parse_message(msg, start_time, end_time=None):
 	workout += 1.5*len(re.findall("!lift", txt))+.5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
 	return people, throw, workout
 
-def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # Weekly goal is 4 "points" if 60mins throwing is 2pts
+def get_progress(leaderboard, users, weekly_goal=4, metric=None, isWeekly=False): # Weekly goal is 4 "points" if 60mins throwing is 2pts
 	total = 0
 	if metric == 'throw' or metric is None:
 		total += sum([leaderboard[u]['throw'] for u in leaderboard]) * 2 / 60 # Normalizing so that gym and throwing are scored 50/50 in progress
@@ -69,7 +69,7 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # 
 	ax.set_xticklabels([f"{int(x*100)}%" for x in xticks])
 
 	title = ""
-	if start is None:
+	if not isWeekly:
 		title += "Semester"
 	else:
 		title += "Weekly"
@@ -195,7 +195,7 @@ def post_throwers(leaderboard, users, channel):
 	c = df.iloc[0]['throw']
 	s1 = f"*Weekly Throwing Update - 1 day left!*\nOverall Progress: {a}/{len(df.index)} reached 60 minutes\n{df['throw'].sum()} total minutes of throwing\n"
 	s1 += f":star2: thrower: <@{b}> with {c} minutes\n"
-	s1 += get_progress(leaderboard, users)
+	s1 += get_progress(leaderboard, users, isWeekly=True)
 
 	s2 = "*Under 60 minutes:*"
 	for i,row in df[df['throw']<60].iterrows():
