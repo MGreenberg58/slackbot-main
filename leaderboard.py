@@ -51,8 +51,8 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, isWeekly=False)
 	cmap = mcolors.LinearSegmentedColormap.from_list(
     "progress_cmap",
     	[(0.0, "red"),    
-        (0.4, "red"),    
-        (0.7, "yellow"), 
+        (0.5, "red"),    
+        (0.8, "yellow"), 
         (1.0, "green")]   # ends green
 	)
 
@@ -115,7 +115,7 @@ def get_metrics(users, cap=False, info=None, start_time=None, end_time=None, met
 					leaderboard[p]['gym'] += w
 					if cap:
 						leaderboard[p]['gym'] = min(leaderboard[p]['gym'], 3.5)
-						
+
 		except Exception as e:
 			logging.info(f"Invalid message {m} - {e}")
 
@@ -228,7 +228,7 @@ def report_captains(channel):
 	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
 	end_time = (start_time+datetime.timedelta(days=7)-datetime.timedelta(microseconds=1))
 
-	leaderboard = get_metrics(users, start_time.timestamp(), end_time.timestamp(), metrics='throw')
+	leaderboard = get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
 
 	df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
 
