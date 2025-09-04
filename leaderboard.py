@@ -45,8 +45,12 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, isWeekly=False)
 	progress = total / goal if goal > 0 else 0
 
 	cmap = mcolors.LinearSegmentedColormap.from_list(
-        "progress_cmap", ["red", "yellow", "green"]
-    )
+    "progress_cmap",
+    [(0.0, "red"),     # 0%
+        (0.5, "red"),     # stays red until 50%
+        (0.75, "yellow"), # fades to yellow by 75%
+        (1.0, "green")]   # ends green
+	)
 
 	MAX_PROG = 1
 	if not isWeekly:
@@ -105,7 +109,7 @@ def get_metrics(users, cap=False, info=None, start_time=None, end_time=None, met
 				if metrics == 'throw' or metrics is None:
 					leaderboard[p]['throw'] += min(t, 60) if cap else t
 				if metrics == 'gym' or metrics is None:
-					leaderboard[p]['gym'] += min(w, 4.5) if cap else w
+					leaderboard[p]['gym'] += min(w, 3.5) if cap else w
 		except:
 			print(m)
 			logging.info(f"Invalid message {m}")
