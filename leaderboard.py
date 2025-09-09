@@ -33,7 +33,7 @@ def parse_message(msg, start_time, end_time=None):
 	workout += 1.5*len(re.findall("!lift", txt))+.5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
 	return people, throw, workout
 
-def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # Weekly goal is 4 "points" if 60mins throwing is 2pts
+def get_progress(leaderboard, users, weekly_goal=4, metric=None, isWeekly=False): # Weekly goal is 4 "points" if 60mins throwing is 2pts
 	total = 0
 	if metric == 'throw' or metric is None:
 		total += sum([leaderboard[u]['throw'] for u in leaderboard]) * 2 / 60 # Normalizing so that gym and throwing are scored 50/50 in progress
@@ -43,32 +43,40 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # 
 	goal = len(users) * weekly_goal
 
 	progress = total / goal if goal > 0 else 0
-	progress_clamped = min(progress, 1.0)
+
+	MAX_PROG = 1
+	if not isWeekly:
+		MAX_PROG = 1.25
 
 	cmap = mcolors.LinearSegmentedColormap.from_list(
-        "progress_cmap", ["red", "yellow", "green"]
-    )
+    "progress_cmap",
+    	[(0.0, "red"),    
+        (0.5, "red"),    
+        (0.8, "yellow"), 
+        (1.0, "green")]   # ends green
+	)
 
 	fig, ax = plt.subplots(figsize=(6, 2), dpi=200, layout='tight')
-	grad = np.linspace(0, 1, 256).reshape(1, -1)
+	grad = np.linspace(0, MAX_PROG, 256).reshape(1, -1)
 	ax.imshow(
         grad,
-        extent=[0, progress_clamped, -0.2, 0.2],  # only fill up to progress
+        extent=[0, progress, -0.2, 0.2], 
         aspect="auto",
         cmap=cmap
     )
 
-	ax.imshow(grad, extent=[0, progress_clamped, -0.2, 0.2], aspect="auto", cmap=cmap)
-	ax.barh([0], [progress_clamped], color="none", edgecolor="black", height=0.4)
-	ax.barh([0], [1], color="lightgray", alpha=0.3, height=0.4)
+	ax.imshow(grad, extent=[0, progress, -0.2, 0.2], aspect="auto", cmap=cmap)
+	ax.barh([0], [progress], color="none", edgecolor="black", height=0.4)
+	ax.barh([0], [MAX_PROG], color="lightgray", alpha=0.3, height=0.4)
 
-	ax.set_xlim(0, 1)
+	ax.set_xlim(0, MAX_PROG)
 	ax.set_yticks([])
-	ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-	ax.set_xticklabels([f"{int(x*100)}%" for x in [0, 0.25, 0.5, 0.75, 1.0]])
+	xticks = np.linspace(0, MAX_PROG, 6)  # 6 ticks between 0 and 1.25
+	ax.set_xticks(xticks)
+	ax.set_xticklabels([f"{int(x*100)}%" for x in xticks])
 
 	title = ""
-	if start is None:
+	if not isWeekly:
 		title += "Semester"
 	else:
 		title += "Weekly"
@@ -80,9 +88,9 @@ def get_progress(leaderboard, users, weekly_goal=4, metric=None, start=None): # 
 	fig.savefig("progress.jpg")
 	plt.close(fig)
 
-	return f"*Team Progress:* {int(progress*100)}% of goal reached"
+	return f"*Team {title} Progress:* {int(progress*100)}% of goal reached"
 
-def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None):
+def get_metrics(users, cap=False, info=None, start_time=None, end_time=None, metrics=None):
 	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
 	data = pd.read_csv("messages.csv").to_dict('records')
 
@@ -100,11 +108,16 @@ def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None):
 			for p in people:
 				if metrics == 'throw' or metrics is None:
 					leaderboard[p]['throw'] += t
+					if cap:
+						leaderboard[p]['throw'] = min(leaderboard[p]['throw'], 60)
+
 				if metrics == 'gym' or metrics is None:
 					leaderboard[p]['gym'] += w
-		except:
-			print(m)
-			logging.info(f"Invalid message {m}")
+					if cap:
+						leaderboard[p]['gym'] = min(leaderboard[p]['gym'], 3.5)
+
+		except Exception as e:
+			logging.info(f"Invalid message {m} - {e}")
 
 	return leaderboard
 
@@ -160,17 +173,26 @@ def display(leaderboard, users, typ=0):
 def post_message(message, channel, thread=False, img=None):
 	client = WebClient(token=os.getenv("SLACK_TOKEN"))
 	try:
-		if thread:
-			response = client.conversations_history(channel=channel,limit=1)
+		response = client.conversations_history(channel=channel,limit=1)
+		if img is not None:
+			if thread:
+				client.files_upload_v2(
+				channel=channel,
+				initial_comment=message,
+				file=img,
+				thread_ts=response['messages'][0]['ts'])
+			else:
+				client.files_upload_v2(
+				channel=channel,
+				initial_comment=message,
+				file=img)
+
+		if img is None and thread:
 			client.chat_postMessage(channel=channel, text=message, thread_ts=response['messages'][0]['ts'])
-		elif img != None:
-			client.files_upload_v2(
-          	channel=channel,
-			initial_comment=message,
-	 	 	file=img,
-    	)
-		else:
+		
+		if img is None and not thread:
 			client.chat_postMessage(channel=channel, text=message)
+
 	except SlackApiError as e:
 		print(f"Error: {e}")
 		logging.info(f"Slack Error {e}")
@@ -185,12 +207,13 @@ def post_throwers(leaderboard, users, channel):
 	c = df.iloc[0]['throw']
 	s1 = f"*Weekly Throwing Update - 1 day left!*\nOverall Progress: {a}/{len(df.index)} reached 60 minutes\n{df['throw'].sum()} total minutes of throwing\n"
 	s1 += f":star2: thrower: <@{b}> with {c} minutes\n"
-	s1 += get_progress(leaderboard, users)
+	s1 += get_progress(leaderboard, users, weekly_goal=2, metric='throw', isWeekly=True) # 2 pts is 60 mins
 
 	s2 = "*Under 60 minutes:*"
 	for i,row in df[df['throw']<60].iterrows():
 		s2 += f"\n<@{row['id']}> - {60-row['throw']} minutes left"
 
+	time.sleep(4)
 	post_message(s1, channel, False, "progress.jpg")
 	time.sleep(4)
 	post_message(s2, channel, True)
@@ -205,7 +228,7 @@ def report_captains(channel):
 	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
 	end_time = (start_time+datetime.timedelta(days=7)-datetime.timedelta(microseconds=1))
 
-	leaderboard = get_metrics(users, start_time.timestamp(), end_time.timestamp(), metrics='throw')
+	leaderboard = get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
 
 	df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
 
@@ -221,6 +244,7 @@ def report_captains(channel):
 				j = False
 			else:
 				s2 += f"\n*{users[row['id']]}* - {row['throw']} minutes thrown"
+
 	post_message(s1, channel)
 	time.sleep(4)
 	post_message(s2, channel, True)
@@ -242,7 +266,7 @@ def display_leaderboard(channel):
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
 	time.sleep(4)
-	post_message(get_progress(l, users), channel, "progress.jpg")
+	post_message(get_progress(l, users), channel, True, "progress.jpg")
 
 def remind_throwers(channel):
 	if not os.path.exists("people.json"):
@@ -251,11 +275,11 @@ def remind_throwers(channel):
 	with open("people.json", "r") as f:
 		users = json.load(f)
 	
-	now = datetime.datetime.now()-datetime.timedelta(days=4)
+	now = datetime.datetime.now()
 	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
-	end_time = (start_time+datetime.timedelta(days=7)-datetime.timedelta(microseconds=1))
+	end_time = start_time + datetime.timedelta(days=7) - datetime.timedelta(microseconds=1)
 
-	l = get_metrics(users, start_time.timestamp(), end_time.timestamp(), metrics='throw')
+	l = get_metrics(users, cap=True, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
 	post_throwers(l, users, channel)
 	
 
