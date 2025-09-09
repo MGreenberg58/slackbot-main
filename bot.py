@@ -14,8 +14,12 @@ import datetime, time
 import pandas as pd
 from leaderboard import display_leaderboard, remind_throwers, report_captains
 
-TOKEN = os.getenv("SLACK_TOKEN")
-CHANNEL = os.getenv("TESTING")
+# TOKEN = os.getenv("SLACK_TOKEN")
+TOKEN = os.getenv("SLACK_TOKEN_25_26")
+CHANNEL = os.getenv("WORKOUTS")
+
+print(TOKEN)
+print(CHANNEL)
 
 def get_selfies_messages(channel_id, days=7, limit=250, cursor=None):
     client = WebClient(token=TOKEN)
@@ -79,10 +83,10 @@ if __name__ == "__main__":
         write(df)
         weekday = datetime.datetime.today().weekday()
         # if weekday == 5:
-        remind_throwers(CHANNEL)
-        # if weekday == 0:
-        display_leaderboard(CHANNEL)
-        report_captains(CHANNEL)
+        # remind_throwers(CHANNEL)
+        # # if weekday == 0:
+        # display_leaderboard(CHANNEL)
+        # report_captains(CHANNEL)
         logging.info("Slack bot run completed successfully")
     except Exception as e:
         logging.error(f"Error running bot: {e}")
