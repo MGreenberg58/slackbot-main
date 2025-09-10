@@ -5,6 +5,7 @@ import datetime
 import requests
 import os
 import logging
+from dotenv import load_dotenv
 
 logging.basicConfig(
     filename="reset.log",
@@ -12,7 +13,9 @@ logging.basicConfig(
     format='%(asctime)s:%(levelname)s:%(message)s'
 )
 
+load_dotenv()
 BOT_USER = "U09BZRB5LMQ"
+TOKEN = os.getenv("SLACK_TOKEN_25_26")
 
 def reset_info():
 	info = {"start": datetime.datetime.now().timestamp()}
@@ -40,7 +43,7 @@ def fix(img_path):
 	output_image.save(img_path, 'PNG')
 
 def get_people(channel_id):
-	client = WebClient(token=os.getenv("SLACK_TOKEN"))
+	client = WebClient(token=TOKEN)
 
 	if not os.path.isdir("profiles"):
 		os.makedirs("profiles")
@@ -69,5 +72,5 @@ def get_people(channel_id):
 		logging.error(f"Slack API error: {e}")
 
 if __name__ == '__main__':
-	get_people(os.getenv("TESTING"))
+	get_people(os.getenv("WORKOUTS"))
 	reset_info()

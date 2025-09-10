@@ -4,3 +4,100 @@
 2025-09-09 16:54:53,232:INFO:Slack bot started
 2025-09-09 16:55:22,491:INFO:Slack bot started
 2025-09-09 16:55:51,281:INFO:Slack bot started
+2025-09-09 17:02:48,112:INFO:Slack bot started
+2025-09-09 17:03:03,565:INFO:Slack bot started
+2025-09-09 17:03:04,680:ERROR:Slack API error: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+2025-09-09 17:03:04,703:ERROR:Error running bot: 'ts'
+2025-09-09 17:03:27,994:INFO:Slack bot started
+2025-09-09 17:03:29,002:ERROR:Slack API error: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+2025-09-09 17:03:29,006:ERROR:Error running bot: 'ts'
+2025-09-09 18:14:06,923:INFO:Slack bot started
+2025-09-09 18:14:08,073:ERROR:Slack API error: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+2025-09-09 18:14:08,076:ERROR:Error running bot: 'ts'
+2025-09-09 18:14:15,747:INFO:Slack bot started
+2025-09-09 18:14:16,759:ERROR:Slack API error: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+2025-09-09 18:14:16,761:ERROR:Error running bot: 'ts'
+2025-09-09 18:15:55,588:INFO:Slack bot started
+2025-09-09 18:15:56,696:ERROR:Slack API error: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+2025-09-09 18:15:56,701:INFO:No new messages to write
+2025-09-09 18:15:56,710:INFO:Slack bot run completed successfully
+2025-09-09 18:16:29,094:INFO:Slack bot started
+2025-09-09 18:16:30,197:ERROR:Slack API error: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+2025-09-09 18:16:30,202:INFO:No new messages to write
+2025-09-09 18:16:30,219:INFO:Slack bot run completed successfully
+2025-09-09 18:34:44,067:INFO:Slack bot started
+2025-09-09 18:34:45,138:ERROR:Slack API error: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+2025-09-09 18:34:45,141:INFO:No new messages to write
+2025-09-09 18:34:45,145:INFO:Slack bot run completed successfully
+2025-09-09 18:34:55,349:INFO:Slack bot started
+2025-09-09 18:34:56,367:ERROR:Slack API error: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
+The server responded with: {'ok': False, 'error': 'not_in_channel'}
+2025-09-09 18:34:56,371:INFO:No new messages to write
+2025-09-09 18:34:56,376:INFO:Slack bot run completed successfully
+2025-09-09 18:37:14,863:INFO:Slack bot started
+2025-09-09 18:37:17,123:INFO:4 threads processed, 49 messages retrieved
+2025-09-09 18:37:17,130:INFO:21 rows > 70 rows
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': 'added an integration to this channel: <https://gttribe25-26.slack.com/services/B09EE3EMJDC|SelfiesBot>', 'user': 'U08SA11U9U4', 'ts': 1757457092.843909, 'thread_ts': nan} - 'U08SA11U9U4'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!recovery pt + 20 min bike ', 'user': 'U09DFCG1PLL', 'ts': 1757456881.107689, 'thread_ts': nan} - 'U09DFCG1PLL'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!lift day 1 <@U09DA8TV091> <@U09E477LV6U> ', 'user': 'U09DGGMTWNA', 'ts': 1757438918.534059, 'thread_ts': nan} - 'U09DGGMTWNA'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!lift day 1, !throw 15 <@U09D9JCTUCV> <@U09E59QR3KJ> ', 'user': 'U08SA14R804', 'ts': 1757429517.244579, 'thread_ts': nan} - 'U08SA14R804'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!recovery sauna + stretch + compression boots', 'user': 'U09E49X4YQG', 'ts': 1757390338.892169, 'thread_ts': 1757390338.892169} - 'U09E49X4YQG'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': 'can i pull up and use them sometime ', 'user': 'U08SA17NKTN', 'ts': 1757429933.116869, 'thread_ts': 1757390338.892169} - 'U08SA17NKTN'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '*im gonna pull up and use those some time ', 'user': 'U08SA17NKTN', 'ts': 1757429951.922919, 'thread_ts': 1757390338.892169} - 'U08SA17NKTN'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!lift day 3 cmon bruv', 'user': 'U08SA11U9U4', 'ts': 1757389834.719689, 'thread_ts': nan} - 'U08SA11U9U4'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!recovery stretch ', 'user': 'U09E44Y8KGQ', 'ts': 1757389043.209539, 'thread_ts': nan} - 'U09E44Y8KGQ'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!lift type shit cuzzo <@U09E4RP4LDN> <@U09D6BCJNJX> ', 'user': 'U09DB13JAD8', 'ts': 1757386898.728679, 'thread_ts': nan} - 'U09DB13JAD8'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!lift <@U09DB6PQ350> <@U09DC01N2EA> \n!throw 30', 'user': 'U09E43UKLRE', 'ts': 1757378287.846619, 'thread_ts': nan} - 'U09E43UKLRE'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!upper', 'user': 'U09E44224QG', 'ts': 1757378029.333409, 'thread_ts': nan} - 'U09E44224QG'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!throw 45', 'user': 'U09CY97SZBR', 'ts': 1757373879.543779, 'thread_ts': 1757373879.543779} - 'U09CY97SZBR'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!throw 55 !upper pull', 'user': 'U09E59QR3KJ', 'ts': 1757373919.432799, 'thread_ts': 1757373879.543779} - 'U09E59QR3KJ'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': 'top 2 gooners', 'user': 'U08SA17NKTN', 'ts': 1757381675.269829, 'thread_ts': 1757373879.543779} - 'U08SA17NKTN'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!upper', 'user': 'U09E44Y8KGQ', 'ts': 1757368831.398489, 'thread_ts': nan} - 'U09E44Y8KGQ'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!cardio bike', 'user': 'U09DCTQTYGJ', 'ts': 1757361732.461089, 'thread_ts': nan} - 'U09DCTQTYGJ'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '<!channel> bot activates today', 'user': 'U08SA14R804', 'ts': 1757358679.257589, 'thread_ts': nan} - 'U08SA14R804'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!throw 60', 'user': 'U09E44224QG', 'ts': 1757357878.362449, 'thread_ts': 1757357878.362449} - 'U09E44224QG'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!throw 85', 'user': 'U09DC01N2EA', 'ts': 1757358561.391109, 'thread_ts': 1757357878.362449} - 'U09DC01N2EA'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!throw 45', 'user': 'U09DFCG1PLL', 'ts': 1757357326.121719, 'thread_ts': 1757357326.121719} - 'U09DFCG1PLL'
+2025-09-09 18:37:17,144:INFO:Invalid message {'text': '!recovery pt', 'user': 'U09DFCG1PLL', 'ts': 1757367432.714179, 'thread_ts': 1757357326.121719} - 'U09DFCG1PLL'
+2025-09-09 18:37:17,144:INFO:Slack bot run completed successfully
+2025-09-09 18:37:21,555:INFO:Slack bot started
+2025-09-09 18:37:23,688:INFO:4 threads processed, 49 messages retrieved
+2025-09-09 18:37:23,692:INFO:70 rows > 70 rows
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': 'added an integration to this channel: <https://gttribe25-26.slack.com/services/B09EE3EMJDC|SelfiesBot>', 'user': 'U08SA11U9U4', 'ts': 1757457092.843909, 'thread_ts': nan} - 'U08SA11U9U4'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!recovery pt + 20 min bike ', 'user': 'U09DFCG1PLL', 'ts': 1757456881.107689, 'thread_ts': nan} - 'U09DFCG1PLL'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!lift day 1 <@U09DA8TV091> <@U09E477LV6U> ', 'user': 'U09DGGMTWNA', 'ts': 1757438918.534059, 'thread_ts': nan} - 'U09DGGMTWNA'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!lift day 1, !throw 15 <@U09D9JCTUCV> <@U09E59QR3KJ> ', 'user': 'U08SA14R804', 'ts': 1757429517.244579, 'thread_ts': nan} - 'U08SA14R804'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!recovery sauna + stretch + compression boots', 'user': 'U09E49X4YQG', 'ts': 1757390338.892169, 'thread_ts': 1757390338.892169} - 'U09E49X4YQG'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': 'can i pull up and use them sometime ', 'user': 'U08SA17NKTN', 'ts': 1757429933.116869, 'thread_ts': 1757390338.892169} - 'U08SA17NKTN'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '*im gonna pull up and use those some time ', 'user': 'U08SA17NKTN', 'ts': 1757429951.922919, 'thread_ts': 1757390338.892169} - 'U08SA17NKTN'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!lift day 3 cmon bruv', 'user': 'U08SA11U9U4', 'ts': 1757389834.719689, 'thread_ts': nan} - 'U08SA11U9U4'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!recovery stretch ', 'user': 'U09E44Y8KGQ', 'ts': 1757389043.209539, 'thread_ts': nan} - 'U09E44Y8KGQ'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!lift type shit cuzzo <@U09E4RP4LDN> <@U09D6BCJNJX> ', 'user': 'U09DB13JAD8', 'ts': 1757386898.728679, 'thread_ts': nan} - 'U09DB13JAD8'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!lift <@U09DB6PQ350> <@U09DC01N2EA> \n!throw 30', 'user': 'U09E43UKLRE', 'ts': 1757378287.846619, 'thread_ts': nan} - 'U09E43UKLRE'
+2025-09-09 18:37:23,697:INFO:Invalid message {'text': '!upper', 'user': 'U09E44224QG', 'ts': 1757378029.333409, 'thread_ts': nan} - 'U09E44224QG'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '!throw 45', 'user': 'U09CY97SZBR', 'ts': 1757373879.543779, 'thread_ts': 1757373879.543779} - 'U09CY97SZBR'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '!throw 55 !upper pull', 'user': 'U09E59QR3KJ', 'ts': 1757373919.432799, 'thread_ts': 1757373879.543779} - 'U09E59QR3KJ'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': 'top 2 gooners', 'user': 'U08SA17NKTN', 'ts': 1757381675.269829, 'thread_ts': 1757373879.543779} - 'U08SA17NKTN'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '!upper', 'user': 'U09E44Y8KGQ', 'ts': 1757368831.398489, 'thread_ts': nan} - 'U09E44Y8KGQ'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '!cardio bike', 'user': 'U09DCTQTYGJ', 'ts': 1757361732.461089, 'thread_ts': nan} - 'U09DCTQTYGJ'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '<!channel> bot activates today', 'user': 'U08SA14R804', 'ts': 1757358679.257589, 'thread_ts': nan} - 'U08SA14R804'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '!throw 60', 'user': 'U09E44224QG', 'ts': 1757357878.362449, 'thread_ts': 1757357878.362449} - 'U09E44224QG'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '!throw 85', 'user': 'U09DC01N2EA', 'ts': 1757358561.391109, 'thread_ts': 1757357878.362449} - 'U09DC01N2EA'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '!throw 45', 'user': 'U09DFCG1PLL', 'ts': 1757357326.121719, 'thread_ts': 1757357326.121719} - 'U09DFCG1PLL'
+2025-09-09 18:37:23,699:INFO:Invalid message {'text': '!recovery pt', 'user': 'U09DFCG1PLL', 'ts': 1757367432.714179, 'thread_ts': 1757357326.121719} - 'U09DFCG1PLL'
+2025-09-09 18:37:23,699:INFO:Slack bot run completed successfully
+2025-09-10 00:33:43,282:INFO:Slack bot started
+2025-09-10 00:33:52,511:INFO:6 threads processed, 55 messages retrieved
+2025-09-10 00:33:52,517:INFO:70 rows > 76 rows
+2025-09-10 00:33:52,546:INFO:Slack bot run completed successfully
+2025-09-10 00:44:00,609:INFO:Slack bot started
+2025-09-10 00:44:03,110:INFO:6 threads processed, 56 messages retrieved
+2025-09-10 00:44:03,114:INFO:76 rows > 77 rows
+2025-09-10 00:44:03,116:INFO:Slack bot run completed successfully

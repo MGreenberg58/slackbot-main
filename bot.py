@@ -8,18 +8,18 @@ logging.basicConfig(
 logging.info("Slack bot started")
 
 import os
+from dotenv import load_dotenv
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import datetime, time
 import pandas as pd
 from leaderboard import display_leaderboard, remind_throwers, report_captains
 
-# TOKEN = os.getenv("SLACK_TOKEN")
-TOKEN = os.getenv("SLACK_TOKEN_25_26")
-CHANNEL = os.getenv("WORKOUTS")
+load_dotenv()
 
-print(TOKEN)
-print(CHANNEL)
+TOKEN = os.getenv("SLACK_TOKEN_25_26")
+WORKOUT_CHANNEL = os.getenv("WORKOUTS")
+CAPTAINS_CHANNEL = os.getenv("CAPTAINS")
 
 def get_selfies_messages(channel_id, days=7, limit=250, cursor=None):
     client = WebClient(token=TOKEN)
@@ -54,6 +54,12 @@ def write(df2):
         df1 = pd.read_csv(file_path, dtype=str)
     else:
         df1 = pd.DataFrame(columns=df2.columns)
+
+    if df2.empty:
+        logging.info("No new messages to write")
+        df1.to_csv(file_path, index=False)
+        return
+    
     old_length = len(df1)
     df1 = df1[~df1['ts'].isin(df2['ts'])]
     df1 = pd.concat([df1, df2], ignore_index=True)
@@ -75,18 +81,18 @@ def paginate(channel_id, days=90, limit=200):
 if __name__ == "__main__":
     if not TOKEN:
         raise ValueError("SLACK_TOKEN is missing!")
-    if not CHANNEL:
+    if not WORKOUT_CHANNEL:
         raise ValueError("SLACK_CHANNEL_ID is missing!")
 
     try:
-        df = paginate(CHANNEL, 7)
+        df = paginate(WORKOUT_CHANNEL, 7)
         write(df)
         weekday = datetime.datetime.today().weekday()
-        # if weekday == 5:
-        # remind_throwers(CHANNEL)
-        # # if weekday == 0:
-        # display_leaderboard(CHANNEL)
-        # report_captains(CHANNEL)
+        if weekday == 5:
+            remind_throwers(WORKOUT_CHANNEL)
+        if weekday == 0:
+            display_leaderboard(WORKOUT_CHANNEL)
+            report_captains(CAPTAINS_CHANNEL)
         logging.info("Slack bot run completed successfully")
     except Exception as e:
         logging.error(f"Error running bot: {e}")
