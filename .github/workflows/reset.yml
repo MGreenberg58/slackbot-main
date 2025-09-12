@@ -22,6 +22,9 @@ jobs:
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           TESTING: ${{ secrets.TESTING }}
+          SLACK_TOKEN_25_26: ${{ secrets.SLACK_TOKEN_25_26 }}
+          CAPTAINS: ${{ secrets.CAPTAINS }}
+          WORKOUTS: ${{ secrets.WORKOUTS }}
         run: python reset.py
 
       - name: Upload logs

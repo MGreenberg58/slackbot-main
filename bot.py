@@ -84,13 +84,14 @@ if __name__ == "__main__":
     if not WORKOUT_CHANNEL:
         raise ValueError("SLACK_CHANNEL_ID is missing!")
 
+
     try:
         df = paginate(WORKOUT_CHANNEL, 7)
         write(df)
         weekday = datetime.datetime.today().weekday()
-        if weekday == 5:
+        if weekday == 5: # Saturday
             remind_throwers(WORKOUT_CHANNEL)
-        if weekday == 0:
+        if weekday == 0: # Monday
             display_leaderboard(WORKOUT_CHANNEL)
             report_captains(CAPTAINS_CHANNEL)
         logging.info("Slack bot run completed successfully")
