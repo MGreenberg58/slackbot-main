@@ -13,7 +13,7 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import datetime, time
 import pandas as pd
-from leaderboard import display_leaderboard, remind_throwers, report_captains
+from leaderboard import display_leaderboard, remind_users, report_captains
 
 load_dotenv()
 
@@ -90,7 +90,8 @@ if __name__ == "__main__":
         write(df)
         weekday = datetime.datetime.today().weekday()
         if weekday == 5: # Saturday
-            remind_throwers(WORKOUT_CHANNEL)
+            remind_users(WORKOUT_CHANNEL, 'throw')
+            remind_users(WORKOUT_CHANNEL, 'lift')
         if weekday == 0: # Monday
             display_leaderboard(WORKOUT_CHANNEL)
             report_captains(CAPTAINS_CHANNEL)

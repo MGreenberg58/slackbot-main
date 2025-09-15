@@ -35,14 +35,16 @@ def parse_message(msg, start_time, end_time=None):
 	txt = msg["text"]
 	people = [msg['user']] + re.findall("<@([^>]+)>", txt)
 	throw = sum([int(x) for x in re.findall("!throw ([0-9]+)", txt)])
-	workout = len(re.findall("!gym", txt))+len(re.findall("!cardio", txt))+1.5*len(re.findall("!workout", txt))
-	workout += 1.5*len(re.findall("!lift", txt))+.5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
-	return people, throw, workout
+	gym = len(re.findall("!gym", txt))+len(re.findall("!cardio", txt))+1.5*len(re.findall("!workout", txt))
+	gym += .5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
+	lift = 1.5*len(re.findall("!lift", txt))
+	return people, throw, gym, lift
 
 def get_progress(leaderboard, users, goal=4, metric=None, isWeekly=False, cap=False): # Weekly goal is 4 "points" if 60mins throwing is 2pts
 	total = 0.0
 	for u in leaderboard:
 		gym_pts = leaderboard[u]["gym"]
+		lift_pts = leaderboard[u]["lift"]
 		throw_pts = leaderboard[u]["throw"] * 2 / 60  # normalize throwing
 
 		if metric == "gym":
@@ -53,10 +55,14 @@ def get_progress(leaderboard, users, goal=4, metric=None, isWeekly=False, cap=Fa
 			contrib = throw_pts
 			if cap:
 				contrib = min(contrib, 2)
+		elif metric == "lift":
+			contrib = lift_pts
+			if cap:
+				contrib = min(contrib, 1.5)
 		else:  # combined metric
 			contrib = gym_pts + throw_pts
 			if cap:
-				contrib = min(contrib, 4)
+				contrib = min(contrib, 6)
 
 		total += contrib
 
@@ -103,7 +109,7 @@ def get_progress(leaderboard, users, goal=4, metric=None, isWeekly=False, cap=Fa
 		title += "Weekly"
 
 	metric_title = ""
-	if metric == 'gym':
+	if metric == 'gym' or metric == 'lift':
 		metric_title = "Gym"
 	elif metric == 'throw':
 		metric_title = "Throwing"
@@ -119,7 +125,7 @@ def get_progress(leaderboard, users, goal=4, metric=None, isWeekly=False, cap=Fa
 
 	return f"*Team {title} Progress:* {int(progress*100)}% of goal reached"
 
-def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None):
+def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None, combine_gym=False):
 	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
 	data = pd.read_csv("messages.csv").to_dict('records')
 
@@ -130,16 +136,22 @@ def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None):
 	for m in data:
 		try:
 			if info:
-				people,t,w = parse_message(m, info['start'])
+				people,t,g,l = parse_message(m, info['start'])
 			else:
-				people,t,w = parse_message(m, start_time, end_time)
+				people,t,g,l = parse_message(m, start_time, end_time)
 
 			for p in people:
 				if metrics == 'throw' or metrics is None:
 					leaderboard[p]['throw'] += t
-
+					
 				if metrics == 'gym' or metrics is None:
-					leaderboard[p]['gym'] += w
+					leaderboard[p]['gym'] += g
+
+				if metrics == 'lift' or metrics is None:
+						leaderboard[p]['lift'] += l
+				
+				if combine_gym:
+					leaderboard[p]['gym'] += l
 
 		except Exception as e:
 			logging.info(f"Invalid message {m} - {e}")
@@ -227,16 +239,34 @@ def post_throwers(leaderboard, users, channel):
 	df['name'] = df.apply(lambda x: users[x['id']], axis=1)
 	df = df.sort_values("throw", ascending=False)
 
-	a = len(df[df['throw']>=60].index)
-	b = df.iloc[0]['id']
-	c = df.iloc[0]['throw']
-	s1 = f"*Weekly Throwing Update!*\nOverall Progress: {a}/{len(df.index)} reached 60 minutes\n{df['throw'].sum()} total minutes of throwing\n"
-	s1 += f":star2: thrower: <@{b}> with {c} minutes\n"
-	s1 += get_progress(leaderboard, users, goal=2, metric='throw', isWeekly=True, cap=60) # 2 pts is 60 mins
+	complete_throwers = len(df[df['throw']>=60].index)
+	best = df.iloc[0]['id']
+	best_mins = df.iloc[0]['throw']
+	s1 = f"*Weekly Update!*\nOverall Progress: {complete_throwers}/{len(df.index)} reached 60 minutes\n{df['throw'].sum()} total minutes of throwing\n"
+	s1 += f":star2: thrower: <@{best}> with {best_mins} minutes\n"
+	s1 += get_progress(leaderboard, users, goal=2, metric='throw', isWeekly=True, cap=True) # 2 pts is 60 mins
 
 	s2 = "*Under 60 minutes:*"
 	for i,row in df[df['throw']<60].iterrows():
 		s2 += f"\n<@{row['id']}> - {60-row['throw']} minutes left"
+
+	time.sleep(4)
+	post_message(s1, channel, False, "progress.jpg")
+	time.sleep(4)
+	post_message(s2, channel, True)
+
+def post_lifters(leaderboard, users, channel):
+	df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
+	df['name'] = df.apply(lambda x: users[x['id']], axis=1)
+	df = df.sort_values("lift", ascending=False)
+
+	complete_lifters = len(df[df['lift']>=1.5].index)
+	s1 = f"*Weekly Update!*\nOverall Progress: {complete_lifters}/{len(df.index)} reached one lift\n{df['lift'].sum()} points of lifts\n"
+	s1 += get_progress(leaderboard, users, goal=1.5, metric='lift', isWeekly=True, cap=True)
+
+	s2 = "*Under one lift:*"
+	for i,row in df[df['lift']<1.5].iterrows():
+		s2 += f"\n<@{row['id']}>"
 
 	time.sleep(4)
 	post_message(s1, channel, False, "progress.jpg")
@@ -283,7 +313,7 @@ def display_leaderboard(channel):
 	with open("info.json", "r") as f:
 		info = json.load(f)
 
-	l = get_metrics(users, info)
+	l = get_metrics(users, info, combine_gym=True)
 	s1 = display(l, users, 0)
 	s2 = display(l, users, 1)
 	post_message("*Leaderboard Update*", channel, False, "plot.jpg")
@@ -291,9 +321,9 @@ def display_leaderboard(channel):
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
 	time.sleep(4)
-	post_message(get_progress(l, users, goal=13*4), channel, True, "progress.jpg") # 13 weeks of 4 pts as goal
+	post_message(get_progress(l, users, goal=13*6), channel, True, "progress.jpg") # 13 weeks of 6 pts as goal
 
-def remind_throwers(channel):
+def remind_users(channel, metric):
 	if not os.path.exists("people.json"):
 		get_people(WORKOUT_CHANNEL)
 
@@ -304,11 +334,9 @@ def remind_throwers(channel):
 	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
 	end_time = start_time + datetime.timedelta(days=7) - datetime.timedelta(microseconds=1)
 
-	l = get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
-	post_throwers(l, users, channel)
-
-if __name__ == '__main__':
-	display_leaderboard(WORKOUT_CHANNEL)
-	remind_throwers(WORKOUT_CHANNEL)
-	report_captains(CAPTAINS_CHANNEL)
-	pass
+	if metric == 'throw':
+		l = get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
+		post_throwers(l, users, channel)
+	elif metric =='lift':
+		l = get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='lift')
+		post_lifters(l, users, channel)
