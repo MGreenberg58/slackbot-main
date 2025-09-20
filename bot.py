@@ -18,7 +18,9 @@ from leaderboard import display_leaderboard, remind_users, report_captains
 load_dotenv()
 
 TOKEN = os.getenv("SLACK_TOKEN_25_26")
+# TOKEN = os.getenv("SLACK_TOKEN")
 WORKOUT_CHANNEL = os.getenv("WORKOUTS")
+# WORKOUT_CHANNEL = os.getenv("TESTING")
 CAPTAINS_CHANNEL = os.getenv("CAPTAINS")
 
 def get_selfies_messages(channel_id, days=7, limit=250, cursor=None):
@@ -83,7 +85,6 @@ if __name__ == "__main__":
         raise ValueError("SLACK_TOKEN is missing!")
     if not WORKOUT_CHANNEL:
         raise ValueError("SLACK_CHANNEL_ID is missing!")
-
 
     try:
         df = paginate(WORKOUT_CHANNEL, 7)

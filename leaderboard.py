@@ -22,7 +22,9 @@ logging.basicConfig(
 load_dotenv()
 
 TOKEN = os.getenv("SLACK_TOKEN_25_26")
+# TOKEN = os.getenv("SLACK_TOKEN")
 WORKOUT_CHANNEL = os.getenv("WORKOUTS")
+# WORKOUT_CHANNEL = os.getenv("TESTING")
 CAPTAINS_CHANNEL = os.getenv("CAPTAINS")
 
 def parse_message(msg, start_time, end_time=None):
@@ -126,7 +128,7 @@ def get_progress(leaderboard, users, goal=4, metric=None, isWeekly=False, cap=Fa
 	return f"*Team {title} Progress:* {int(progress*100)}% of goal reached"
 
 def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None, combine_gym=False):
-	leaderboard = {x: {"throw": 0, "gym": 0} for x in users.keys()}
+	leaderboard = {x: {"throw": 0, "gym": 0, "lift": 0} for x in users.keys()}
 	data = pd.read_csv("messages.csv").to_dict('records')
 
 	if start_time == None:
@@ -148,7 +150,7 @@ def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None, 
 					leaderboard[p]['gym'] += g
 
 				if metrics == 'lift' or metrics is None:
-						leaderboard[p]['lift'] += l
+					leaderboard[p]['lift'] += l
 				
 				if combine_gym:
 					leaderboard[p]['gym'] += l
