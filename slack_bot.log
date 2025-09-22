@@ -1770,3 +1770,4 @@ The server responded with: {'ok': False, 'error': 'missing_scope', 'needed': 'gr
 2025-09-20 18:57:02,808:INFO:Invalid message {'text': '!lift day 1 <@U08SA11U9U4> <@U09E49X4YQG> ', 'user': 'U09DASAU350', 'ts': 1757872792.057899, 'thread_ts': nan} - not enough values to unpack (expected 4, got 3)
 2025-09-20 18:57:02,808:INFO:Invalid message {'text': '!throw 55 <@U09DC98LVQW> <@U08SA17NKTN> <@U09DFCG1PLL> <@U09DASAU350> ', 'user': 'U08SA14R804', 'ts': 1757869232.107189, 'thread_ts': nan} - not enough values to unpack (expected 4, got 3)
 2025-09-20 18:57:12,772:INFO:Slack bot run completed successfully
+2025-09-22 15:04:59,709:INFO:Slack bot started

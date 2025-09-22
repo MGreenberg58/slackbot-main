@@ -1,4 +1,3 @@
 .env
-messages.csv
 slack_bot.log
 *.pyc

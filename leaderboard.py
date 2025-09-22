@@ -311,7 +311,6 @@ def display_leaderboard(channel):
 		get_people(WORKOUT_CHANNEL)
 	with open("people.json", "r") as f:
 		users = json.load(f)
-
 	with open("info.json", "r") as f:
 		info = json.load(f)
 
