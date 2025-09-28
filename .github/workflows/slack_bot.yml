@@ -36,7 +36,7 @@ jobs:
           name: slack_bot_logs
           path: slack_bot.log
 
-        name: Commit updated messages
+      - name: Commit updated messages
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
