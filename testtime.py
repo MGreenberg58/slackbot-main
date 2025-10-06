@@ -3,5 +3,5 @@ from zoneinfo import ZoneInfo
 
 TEAM_TZ = ZoneInfo("America/New_York")
 
-print(datetime.datetime.now())
-print(datetime.datetime.now(TEAM_TZ))
+print(datetime.now())
+print(datetime.now(TEAM_TZ))
