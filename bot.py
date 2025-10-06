@@ -30,7 +30,7 @@ TEAM_TZ = ZoneInfo("America/New_York")
 def get_selfies_messages(channel_id, days=7, limit=250, cursor=None):
     client = WebClient(token=TOKEN)
     try:
-        start = (datetime.datetime.now()-datetime.timedelta(days=days)).timestamp()
+        start = (datetime.datetime.now(TEAM_TZ) - datetime.timedelta(days=days)).timestamp()
         all_msgs = []
         response = client.conversations_history(
             cursor=cursor,
