@@ -27,7 +27,7 @@ jobs:
           SLACK_TOKEN_25_26: ${{ secrets.SLACK_TOKEN_25_26 }}
           CAPTAINS: ${{ secrets.CAPTAINS }}
           WORKOUTS: ${{ secrets.WORKOUTS }}
-        run: python bot.py
+        run: python testtime.py
 
       - name: Upload logs
         if: always()

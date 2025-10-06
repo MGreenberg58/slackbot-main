@@ -11,7 +11,9 @@ import os
 from dotenv import load_dotenv
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-import datetime, time
+import time
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo 
 import pandas as pd
 from leaderboard import display_leaderboard, remind_users, report_captains
 
@@ -22,6 +24,8 @@ TOKEN = os.getenv("SLACK_TOKEN_25_26")
 WORKOUT_CHANNEL = os.getenv("WORKOUTS")
 # WORKOUT_CHANNEL = os.getenv("TESTING")
 CAPTAINS_CHANNEL = os.getenv("CAPTAINS")
+
+TEAM_TZ = ZoneInfo("America/New_York")
 
 def get_selfies_messages(channel_id, days=7, limit=250, cursor=None):
     client = WebClient(token=TOKEN)
@@ -71,13 +75,12 @@ def write(df2):
 
 def paginate(channel_id, days=90, limit=200):
     df, response = get_selfies_messages(channel_id, days, limit)
-    if response.get('has_more'):
-        time.sleep(60)
+    
     while response.get('has_more'):
+        time.sleep(60)
         df2, response = get_selfies_messages(channel_id, days, limit, response['response_metadata']['next_cursor'])
         df = pd.concat([df, df2], ignore_index=True)
-        if response.get('has_more'):
-            time.sleep(60)
+            
     return df
 
 if __name__ == "__main__":

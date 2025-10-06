@@ -7,7 +7,8 @@ import matplotlib.colors as mcolors
 from PIL import Image
 import numpy as np
 import time
-import datetime
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo 
 import os
 from reset import get_people
 import logging
@@ -26,6 +27,8 @@ TOKEN = os.getenv("SLACK_TOKEN_25_26")
 WORKOUT_CHANNEL = os.getenv("WORKOUTS")
 # WORKOUT_CHANNEL = os.getenv("TESTING")
 CAPTAINS_CHANNEL = os.getenv("CAPTAINS")
+
+TEAM_TZ = ZoneInfo("America/New_York")
 
 def parse_message(msg, start_time, end_time=None):
 	if end_time != None and end_time < float(msg['ts']):
@@ -132,7 +135,7 @@ def get_metrics(users, info=None, start_time=None, end_time=None, metrics=None, 
 	data = pd.read_csv("messages.csv").to_dict('records')
 
 	if start_time == None:
-		now = datetime.datetime.now()
+		now = datetime.datetime.now(TEAM_TZ)
 		start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
 		
 	for m in data:
@@ -281,12 +284,12 @@ def report_captains(channel):
 
 	with open("people.json", "r") as f:
 		users = json.load(f)
-	now = datetime.datetime.now()-datetime.timedelta(days=4)
-	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
-	end_time = (start_time+datetime.timedelta(days=7)-datetime.timedelta(microseconds=1))
+		
+	now = datetime.datetime.now(TEAM_TZ) - datetime.timedelta(days=4)
+	start_time = (now - datetime.timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
+	end_time = (start_time + datetime.timedelta(days=7) - datetime.timedelta(microseconds=1))
 
 	leaderboard = get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='throw')
-
 	df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
 
 	s1 = f"Throwers under 60 minutes the week of {start_time.strftime('%m/%d')}-{end_time.strftime('%m/%d')}"
@@ -301,6 +304,27 @@ def report_captains(channel):
 				j = False
 			else:
 				s2 += f"\n*{users[row['id']]}* - {row['throw']} minutes thrown"
+
+	post_message(s1, channel)
+	time.sleep(4)
+	post_message(s2, channel, True)
+	time.sleep(4)
+
+	leaderboard = get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='lift')
+	df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
+
+	s1 = f"Throwers under one lift the week of {start_time.strftime('%m/%d')}-{end_time.strftime('%m/%d')}"
+	if len(df[df['lift']<1.5].index) == 0:
+		s2 = "None!"
+	else:
+		s2 = ""
+		j = True
+		for i,row in df[df['lift']<1.5].iterrows():
+			if j:
+				s2 += f"*{users[row['id']]}* - {row['lift']} lift points"
+				j = False
+			else:
+				s2 += f"\n*{users[row['id']]}* - {row['lift']} lift points"
 
 	post_message(s1, channel)
 	time.sleep(4)
@@ -331,7 +355,7 @@ def remind_users(channel, metric):
 	with open("people.json", "r") as f:
 		users = json.load(f)
 	
-	now = datetime.datetime.now()
+	now = datetime.datetime.now(TEAM_TZ)
 	start_time = (now - datetime.timedelta(days=(now.weekday()))).replace(hour=0, minute=0, second=0, microsecond=0)
 	end_time = start_time + datetime.timedelta(days=7) - datetime.timedelta(microseconds=1)
 
