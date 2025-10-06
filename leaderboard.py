@@ -82,10 +82,9 @@ def get_progress(leaderboard, users, goal=4, metric=None, isWeekly=False, cap=Fa
 	cmap = mcolors.LinearSegmentedColormap.from_list(
     "progress_cmap",
     	[(0.0, "red"),    
-        (0.5, "red"),    
-        (0.85, "yellow"), 
-        (1.0, "green")]   # ends green
-	)
+        (0.4, "red"),    
+        (0.8, "yellow"), 
+        (1.0, "green")])   # ends green
 	norm = mcolors.Normalize(vmin=0, vmax=MAX_PROG)
 
 	fig, ax = plt.subplots(figsize=(6, 2), dpi=200, layout='tight')
@@ -346,7 +345,7 @@ def display_leaderboard(channel):
 	post_message(s1, channel, True)
 	post_message(s2, channel, True)
 	time.sleep(4)
-	post_message(get_progress(l, users, goal=13*6), channel, True, "progress.jpg") # 13 weeks of 6 pts as goal
+	post_message(get_progress(l, users, goal=13*4), channel, True, "progress.jpg") # 13 weeks of 4 pts as goal
 
 def remind_users(channel, metric):
 	if not os.path.exists("people.json"):
