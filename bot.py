@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import time
-from datetime import datetime, timedelta
+import datetime
 from zoneinfo import ZoneInfo 
 import pandas as pd
 from leaderboard import display_leaderboard, remind_users, report_captains

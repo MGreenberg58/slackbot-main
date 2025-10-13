@@ -7,7 +7,7 @@ import matplotlib.colors as mcolors
 from PIL import Image
 import numpy as np
 import time
-from datetime import datetime, timedelta
+import datetime
 from zoneinfo import ZoneInfo 
 import os
 from reset import get_people
