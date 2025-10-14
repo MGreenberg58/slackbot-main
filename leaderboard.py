@@ -2,8 +2,10 @@ import json, re
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+matplotlib.use('Agg')
 from PIL import Image
 import numpy as np
 import time
@@ -12,15 +14,12 @@ from zoneinfo import ZoneInfo
 import os
 from reset import get_people
 import logging
-from dotenv import load_dotenv
 
 logging.basicConfig(
     filename="slack_bot.log",
     level=logging.INFO,
     format='%(asctime)s:%(levelname)s:%(message)s'
 )
-
-load_dotenv()
 
 # TOKEN = os.getenv("SLACK_TOKEN_25_26")
 # # TOKEN = os.getenv("SLACK_TOKEN")
