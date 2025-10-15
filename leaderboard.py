@@ -219,7 +219,7 @@ class Leaderboard:
 		return text
 
 	def post_message(self, message, channel, thread=False, img=None):
-		client = WebClient(token=self.bot_token)
+		client = WebClient(token=self.token)
 		try:
 			response = client.conversations_history(channel=channel,limit=1)
 			if img is not None:
