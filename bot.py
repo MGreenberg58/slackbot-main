@@ -83,10 +83,10 @@ class Bot:
 
 if __name__ == "__main__":
 
-    # TOKEN = os.getenv("SLACK_TOKEN_25_26")
-    TOKEN = os.getenv("SLACK_TOKEN")
-    # WORKOUT_CHANNEL = os.getenv("WORKOUTS")
-    WORKOUT_CHANNEL = os.getenv("TESTING")
+    TOKEN = os.getenv("SLACK_TOKEN_25_26")
+    # TOKEN = os.getenv("SLACK_TOKEN")
+    WORKOUT_CHANNEL = os.getenv("WORKOUTS")
+    # WORKOUT_CHANNEL = os.getenv("TESTING")
     CAPTAINS_CHANNEL = os.getenv("CAPTAINS")
     TEAM_TZ = ZoneInfo("America/New_York")
 
