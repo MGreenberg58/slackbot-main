@@ -30,9 +30,17 @@ def get_leaderboard(ack, body, say, client):
             leaderboard.display_leaderboard(channel_id)
             say(f"<@{user_id}>, leaderboard displayed")
         except Exception as e:
-            say(f"Error displaying leaderboard: `{e}`")
+            client.chat_postEphemeral(
+                channel=channel_id,
+                user=user_id,
+                text=f"Error displaying leaderboard: `{e}`"
+            )
     else:
-        say(f"This command only works in DMs")
+        client.chat_postEphemeral(
+            channel=channel_id,
+            user=user_id,
+            text="This command only works in DMs"
+        )
 
 @slack_app.command("/getrequirements")
 def get_leaderboard(ack, body, say, client):
@@ -49,9 +57,17 @@ def get_leaderboard(ack, body, say, client):
             leaderboard.remind_users(channel_id, 'lift')
             say(f"<@{user_id}>, requirements displayed")
         except Exception as e:
-            say(f"Error displaying leaderboard: `{e}`")
+            client.chat_postEphemeral(
+                channel=channel_id,
+                user=user_id,
+                text=f"Error displaying leaderboard: `{e}`"
+            )
     else:
-        say(f"This command only works in DMs")
+        client.chat_postEphemeral(
+            channel=channel_id,
+            user=user_id,
+            text="This command only works in DMs"
+        )
 
 if __name__ == "__main__":
     if not SLACK_BOT_TOKEN or not SLACK_APP_TOKEN:
