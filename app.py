@@ -22,15 +22,17 @@ def get_leaderboard(ack, body, say, client):
 
     user_id = body["user_id"]
     channel_id = body["channel_id"]
-
+        
     if channel_id.startswith("D") or channel_id == CAPTAINS_CHANNEL:
         try:
+            df = bot.paginate(WORKOUT_CHANNEL, 1)
+            bot.write(df)
             leaderboard.display_leaderboard(channel_id)
-            say(f"<@{user_id}>, leaderboard displayed ✅")
+            say(f"<@{user_id}>, leaderboard displayed")
         except Exception as e:
-            say(f"⚠️ Error displaying leaderboard: `{e}`")
+            say(f"Error displaying leaderboard: `{e}`")
     else:
-        say(f"⚠️ This command only works in DMs")
+        say(f"This command only works in DMs")
 
 @slack_app.command("/getrequirements")
 def get_leaderboard(ack, body, say, client):
@@ -41,13 +43,15 @@ def get_leaderboard(ack, body, say, client):
 
     if channel_id.startswith("D") or channel_id == CAPTAINS_CHANNEL:
         try:
+            df = bot.paginate(WORKOUT_CHANNEL, 1)
+            bot.write(df)
             leaderboard.remind_users(channel_id, 'throw')
             leaderboard.remind_users(channel_id, 'lift')
-            say(f"<@{user_id}>, requirements displayed ✅")
+            say(f"<@{user_id}>, requirements displayed")
         except Exception as e:
-            say(f"⚠️ Error displaying leaderboard: `{e}`")
+            say(f"Error displaying leaderboard: `{e}`")
     else:
-        say(f"⚠️ This command only works in DMs")
+        say(f"This command only works in DMs")
 
 if __name__ == "__main__":
     if not SLACK_BOT_TOKEN or not SLACK_APP_TOKEN:

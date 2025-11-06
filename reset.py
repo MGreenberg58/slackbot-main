@@ -59,7 +59,7 @@ def get_people(channel_id):
 			people[response['user']['id']] = response['user']['real_name']
 			url = (response['user']['profile']['image_512'])
 			r = requests.get(url)
-			path = os.path.join("profiles", f"{response["user"]["id"]}.png")
+			path = os.path.join("profiles", f"{response['user']['id']}.png")
 			with open(path, 'wb') as file:
 				file.write(r.content)
 			fix(path)

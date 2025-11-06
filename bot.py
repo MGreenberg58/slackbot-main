@@ -25,7 +25,7 @@ class Bot:
         self.TOKEN = bot_token
         self.TZ = timezone
 
-    def get_selfies_messages(self, channel_id, days=7, limit=250, cursor=None):
+    def get_selfies_messages(self, channel_id, days=7, limit=200, cursor=None):
         client = WebClient(token=self.TOKEN)
         try:
             start = (datetime.datetime.now(self.TZ) - datetime.timedelta(days=days)).timestamp()
@@ -54,6 +54,7 @@ class Bot:
 
     def write(self, df2):
         file_path = os.path.join(os.getcwd(), "messages.csv")
+
         if os.path.exists(file_path):
             df1 = pd.read_csv(file_path, dtype=str)
         else:
@@ -63,19 +64,42 @@ class Bot:
             logging.info("No new messages to write")
             df1.to_csv(file_path, index=False)
             return
-        
+
         old_length = len(df1)
-        df1 = df1[~df1['ts'].isin(df2['ts'])]
-        df1 = pd.concat([df1, df2], ignore_index=True)
-        df1 = df1.drop_duplicates(subset=["text","user","ts"])
-        logging.info(f"{old_length} rows > {len(df1)} rows")
+
+        for col in df2.columns:
+            if col not in df1.columns:
+                df1[col] = None
+        for col in df1.columns:
+            if col not in df2.columns:
+                df2[col] = None
+
+        df1 = df1.set_index("ts")
+        df2 = df2.set_index("ts")
+        updates, new_msgs = 0, 0
+
+        for ts, row in df2.iterrows():
+            if ts not in df1.index: # New msg
+                df1.loc[ts] = row
+                new_msgs += 1
+            else: # Existing msg
+                old_text = df1.loc[ts]["text"]
+                new_text = row["text"]
+                if old_text != new_text:
+                    df1.loc[ts] = row 
+                    updates += 1
+
+        df1 = df1.reset_index()
+        df1 = df1.drop_duplicates(subset=["ts"], keep="last")
+
+        logging.info(f"{old_length} rows -> {len(df1)} rows " f"({new_msgs} new, {updates} edits updated)")
         df1.to_csv(file_path, index=False)
 
-    def paginate(self, channel_id, days=90, limit=200):
+
+    def paginate(self, channel_id, days=7, limit=100):
         df, response = self.get_selfies_messages(channel_id, days, limit)
-        
         while response.get('has_more'):
-            time.sleep(60)
+            time.sleep(30)
             df2, response = self.get_selfies_messages(channel_id, days, limit, response['response_metadata']['next_cursor'])
             df = pd.concat([df, df2], ignore_index=True)
                 
@@ -99,7 +123,7 @@ if __name__ == "__main__":
     leaderboard = Leaderboard(TOKEN, WORKOUT_CHANNEL, CAPTAINS_CHANNEL, TEAM_TZ)
 
     try:
-        df = bot.paginate(WORKOUT_CHANNEL, 7)
+        df = bot.paginate(WORKOUT_CHANNEL, 3)
         bot.write(df)
         weekday = datetime.datetime.today().weekday()
         if weekday == 5: # Saturday
