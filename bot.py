@@ -129,6 +129,7 @@ if __name__ == "__main__":
         if weekday == 5: # Saturday
             leaderboard.remind_users(WORKOUT_CHANNEL, 'throw')
             leaderboard.remind_users(WORKOUT_CHANNEL, 'lift')
+            leaderboard.remind_users(WORKOUT_CHANNEL, 'workout')
         if weekday == 0: # Monday
             leaderboard.display_leaderboard(WORKOUT_CHANNEL)
             leaderboard.report_captains(CAPTAINS_CHANNEL)

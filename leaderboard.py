@@ -39,10 +39,11 @@ class Leaderboard:
 		txt = msg["text"]
 		people = [msg['user']] + re.findall("<@([^>]+)>", txt)
 		throw = sum([int(x) for x in re.findall("!throw ([0-9]+)", txt)])
-		gym = len(re.findall("!gym", txt))+len(re.findall("!cardio", txt))+1.5*len(re.findall("!workout", txt))
+		gym = len(re.findall("!gym", txt))+len(re.findall("!cardio", txt))
 		gym += .5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
+		workout = 1.5*len(re.findall("!workout", txt))
 		lift = 1.5*len(re.findall("!lift", txt))
-		return people, throw, gym, lift
+		return people, throw, gym, lift, workout
 
 	def get_progress(self, leaderboard, users, goal=4, metric=None, isWeekly=False, cap=False): # Weekly goal is 4 "points" if 60mins throwing is 2pts
 		total = 0.0
@@ -50,6 +51,7 @@ class Leaderboard:
 			gym_pts = leaderboard[u]["gym"]
 			lift_pts = leaderboard[u]["lift"]
 			throw_pts = leaderboard[u]["throw"] * 2 / 60  # normalize throwing
+			workout_points = leaderboard[u]["workout"]
 
 			if metric == "gym":
 				contrib = gym_pts
@@ -63,8 +65,12 @@ class Leaderboard:
 				contrib = lift_pts
 				if cap:
 					contrib = min(contrib, 1.5)
+			elif metric == "workout":
+				contrib = workout_points
+				if cap:
+					contrib = min(contrib, 1.5)
 			else:  # combined metric
-				contrib = gym_pts + throw_pts
+				contrib = gym_pts + throw_pts + workout_points
 				if cap:
 					contrib = min(contrib, 6)
 
@@ -116,6 +122,8 @@ class Leaderboard:
 			metric_title = "Gym"
 		elif metric == 'throw':
 			metric_title = "Throwing"
+		elif metric == 'workout':
+			metric_title = "Workout"
 		else:
 			metric_title = "Throwing/Workout"
 			
@@ -129,7 +137,7 @@ class Leaderboard:
 		return f"*Team {title} Progress:* {int(progress*100)}% of goal reached"
 
 	def get_metrics(self, users, info=None, start_time=None, end_time=None, metrics=None, combine_gym=False):
-		leaderboard = {x: {"throw": 0, "gym": 0, "lift": 0} for x in users.keys()}
+		leaderboard = {x: {"throw": 0, "gym": 0, "lift": 0, "workout": 0} for x in users.keys()}
 		data = pd.read_csv("messages.csv").to_dict('records')
 
 		if start_time == None:
@@ -139,9 +147,9 @@ class Leaderboard:
 		for m in data:
 			try:
 				if info:
-					people,t,g,l = self.parse_message(m, info['start'])
+					people,t,g,l,w = self.parse_message(m, info['start'])
 				else:
-					people,t,g,l = self.parse_message(m, start_time, end_time)
+					people,t,g,l,w = self.parse_message(m, start_time, end_time)
 
 				for p in people:
 					if metrics == 'throw' or metrics is None:
@@ -152,9 +160,13 @@ class Leaderboard:
 
 					if metrics == 'lift' or metrics is None:
 						leaderboard[p]['lift'] += l
+
+					if metrics == 'workout' or metrics is None:
+						leaderboard[p]['workout'] += w
 					
 					if combine_gym:
 						leaderboard[p]['gym'] += l
+						leaderboard[p]['gym'] += w
 
 			except Exception as e:
 				logging.info(f"Invalid message {m} - {e}")
@@ -276,6 +288,24 @@ class Leaderboard:
 		time.sleep(4)
 		self.post_message(s2, channel, True)
 
+	def post_workouters(self, leaderboard, users, channel):
+		df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
+		df['name'] = df.apply(lambda x: users[x['id']], axis=1)
+		df = df.sort_values("workout", ascending=False)
+
+		complete_workouts = len(df[df['workout']>=1.5].index)
+		s1 = f"*Weekly Update!*\nOverall Progress: {complete_workouts}/{len(df.index)} reached one workout\n{df['workout'].sum()} points of workouts\n"
+		s1 += self.get_progress(leaderboard, users, goal=1.5, metric='workout', isWeekly=True, cap=True)
+
+		s2 = "*Under one workout:*"
+		for i,row in df[df['workout']<1.5].iterrows():
+			s2 += f"\n<@{row['id']}>"
+
+		time.sleep(4)
+		self.post_message(s1, channel, False, "progress.jpg")
+		time.sleep(4)
+		self.post_message(s2, channel, True)
+
 	def report_captains(self, channel):
 		if not os.path.exists("people.json"):
 			get_people(self.workout_channel)
@@ -311,7 +341,7 @@ class Leaderboard:
 		leaderboard = self.get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='lift')
 		df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
 
-		s1 = f"Throwers under one lift the week of {start_time.strftime('%m/%d')}-{end_time.strftime('%m/%d')}"
+		s1 = f"Players under one lift the week of {start_time.strftime('%m/%d')}-{end_time.strftime('%m/%d')}"
 		if len(df[df['lift']<1.5].index) == 0:
 			s2 = "None!"
 		else:
@@ -323,6 +353,26 @@ class Leaderboard:
 					j = False
 				else:
 					s2 += f"\n*{users[row['id']]}* - {row['lift']} lift points"
+
+		self.post_message(s1, channel)
+		time.sleep(4)
+		self.post_message(s2, channel, True)
+
+		leaderboard = self.get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='workout')
+		df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
+
+		s1 = f"Players under one workout the week of {start_time.strftime('%m/%d')}-{end_time.strftime('%m/%d')}"
+		if len(df[df['workout']<1.5].index) == 0:
+			s2 = "None!"
+		else:
+			s2 = ""
+			j = True
+			for i,row in df[df['workout']<1.5].iterrows():
+				if j:
+					s2 += f"*{users[row['id']]}* - {row['workout']} workout points"
+					j = False
+				else:
+					s2 += f"\n*{users[row['id']]}* - {row['workout']} workout points"
 
 		self.post_message(s1, channel)
 		time.sleep(4)
@@ -363,3 +413,6 @@ class Leaderboard:
 		elif metric =='lift':
 			l = self.get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='lift')
 			self.post_lifters(l, users, channel)
+		elif metric =='workout':
+			l = self.get_metrics(users, start_time=start_time.timestamp(), end_time=end_time.timestamp(), metrics='workout')
+			self.post_workouters(l, users, channel)
