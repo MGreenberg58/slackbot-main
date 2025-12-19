@@ -126,11 +126,11 @@ if __name__ == "__main__":
         df = bot.paginate(WORKOUT_CHANNEL, 3)
         bot.write(df)
         weekday = datetime.datetime.today().weekday()
-        if weekday == 6: # Saturday
+        if weekday == 4: # Saturday
             leaderboard.remind_users(WORKOUT_CHANNEL, 'throw')
             leaderboard.remind_users(WORKOUT_CHANNEL, 'lift')
             leaderboard.remind_users(WORKOUT_CHANNEL, 'workout')
-        if weekday == 6: # Monday
+        if weekday == 4: # Monday
             leaderboard.display_leaderboard(WORKOUT_CHANNEL)
             # leaderboard.report_captains(CAPTAINS_CHANNEL)
         logging.info("Slack bot run completed successfully")
