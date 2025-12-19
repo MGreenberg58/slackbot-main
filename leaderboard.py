@@ -201,9 +201,9 @@ class Leaderboard:
 			team_names.append(team["name"])
 
 		plt.style.use("fivethirtyeight")
-		fig, ax = plt.subplots(figsize=(6, 4), dpi=300)
+		fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
 
-		bars = ax.bar(team_names, team_totals)
+		bars = ax.bar(team_names, team_totals, colors=list(plt.cm.tab10.colors[:5]))
 		ax.set_ylabel("Total Points")
 		ax.set_title("Team Total Points Comparison")
 
@@ -223,7 +223,7 @@ class Leaderboard:
 		fig.savefig("teams.jpg")
 		plt.close(fig)
 
-		text = "*Team Standings:*\n"
+		text = "*Team Avg Points:*\n"
 		ranked = sorted(zip(team_names, team_totals), key=lambda x: x[1], reverse=True)
 
 		for i, (name, pts) in enumerate(ranked, start=1):
