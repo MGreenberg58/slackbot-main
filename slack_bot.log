@@ -5770,3 +5770,4 @@ AttributeError: 'Leaderboard' object has no attribute 'bot_token'
 2025-10-15 00:59:05,187:INFO:Connected to a new endpoint...
 2025-10-15 00:59:05,198:INFO:Stopped receiving messages from a connection (session id: 6c723e84-bb72-45f2-8c8a-46384e259610)
 2025-10-15 00:59:05,310:INFO:Starting to receive messages from a new connection (session id: 8eb44e5c-34d8-47f9-bf89-3626f892e1eb)
+2025-12-19 16:34:21,865:INFO:Slack bot started
