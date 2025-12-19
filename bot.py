@@ -107,10 +107,10 @@ class Bot:
 
 if __name__ == "__main__":
 
-    # TOKEN = os.getenv("SLACK_TOKEN_25_26")
-    TOKEN = os.getenv("SLACK_TOKEN")
-    # WORKOUT_CHANNEL = os.getenv("WORKOUTS")
-    WORKOUT_CHANNEL = os.getenv("TESTING")
+    TOKEN = os.getenv("SLACK_TOKEN_25_26")
+    # TOKEN = os.getenv("SLACK_TOKEN")
+    WORKOUT_CHANNEL = os.getenv("WORKOUTS")
+    # WORKOUT_CHANNEL = os.getenv("TESTING")
     CAPTAINS_CHANNEL = os.getenv("CAPTAINS")
     TEAM_TZ = ZoneInfo("America/New_York")
 
@@ -126,13 +126,13 @@ if __name__ == "__main__":
         df = bot.paginate(WORKOUT_CHANNEL, 3)
         bot.write(df)
         weekday = datetime.datetime.today().weekday()
-        if weekday == 4: # Saturday
+        if weekday == 5: # Saturday
             leaderboard.remind_users(WORKOUT_CHANNEL, 'throw')
             leaderboard.remind_users(WORKOUT_CHANNEL, 'lift')
             leaderboard.remind_users(WORKOUT_CHANNEL, 'workout')
-        if weekday == 4: # Monday
+        if weekday == 0: # Monday
             leaderboard.display_leaderboard(WORKOUT_CHANNEL)
-            # leaderboard.report_captains(CAPTAINS_CHANNEL)
+            leaderboard.report_captains(CAPTAINS_CHANNEL)
         logging.info("Slack bot run completed successfully")
     except Exception as e:
         logging.error(f"Error running bot: {e}")
