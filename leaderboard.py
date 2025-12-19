@@ -203,7 +203,7 @@ class Leaderboard:
 		plt.style.use("fivethirtyeight")
 		fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
 
-		bars = ax.bar(team_names, team_totals, colors=list(plt.cm.tab10.colors[:5]))
+		bars = ax.bar(team_names, team_totals, color=list(plt.cm.tab10.colors[:5]))
 		ax.set_ylabel("Total Points")
 		ax.set_title("Team Total Points Comparison")
 
