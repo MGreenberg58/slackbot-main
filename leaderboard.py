@@ -172,6 +172,64 @@ class Leaderboard:
 				logging.info(f"Invalid message {m} - {e}")
 
 		return leaderboard
+	
+	def get_teams(self, leaderboard):
+		teams = [{"name": "Georgia 1", "members": ["U09D72BBN59", "U09DFCG1PLL", "U09E49X4YQG", "U09E44Y8KGQ", "U09E44224QG", "U09DCTQTYGJ"]},
+    			{"name": "Georgia 2", "members": ["U09E43UKLRE", "U09E6TNLD7D", "U09DA8TV091", "U09DB6PQ350", "U09DGGMTWNA", "U08SA17NKTN"]},
+				{"name": "Pennsylvania", "members": ["U08SA14R804", "U09DASAU350", "U09DB13JAD8", "U09D9SV9821"]},
+				{"name": "Travel", "members": ["U09DC01N2EA", "U09DCRQ24PP", "U09E59QR3KJ", "U09CY97SZBR", "U09DCAD8MSS"]},
+				{"name": "Other", "members": ["U09E4RP4LDN", "U08SA11U9U4", "U09D9JCTUCV", "U09D6BCJNJX", "U09DC98LVQW"]},]
+		
+		team_totals = []
+		team_names = []
+
+		for team in teams:
+			total = 0.0
+			for uid in team["members"]:
+				if uid not in leaderboard:
+					continue
+
+				gym = leaderboard[uid]["gym"]
+				lift = leaderboard[uid]["lift"]
+				workout = leaderboard[uid]["workout"]
+				throw = leaderboard[uid]["throw"]
+				throw_pts = throw * 2 / 60 
+
+				total += gym + lift + workout + throw_pts
+
+			team_totals.append(total/len(team["members"]))
+			team_names.append(team["name"])
+
+		plt.style.use("fivethirtyeight")
+		fig, ax = plt.subplots(figsize=(6, 4), dpi=300)
+
+		bars = ax.bar(team_names, team_totals)
+		ax.set_ylabel("Total Points")
+		ax.set_title("Team Total Points Comparison")
+
+		# Label
+		for bar in bars:
+			height = bar.get_height()
+			ax.text(
+				bar.get_x() + bar.get_width() / 2,
+				height,
+				f"{height:.1f}",
+				ha="center",
+				va="bottom",
+				fontsize=9
+			)
+
+		plt.tight_layout()
+		fig.savefig("teams.jpg")
+		plt.close(fig)
+
+		text = "*Team Standings:*\n"
+		ranked = sorted(zip(team_names, team_totals), key=lambda x: x[1], reverse=True)
+
+		for i, (name, pts) in enumerate(ranked, start=1):
+			text += f"*{i}. {name}* — {pts:.1f} points\n"
+
+		return text
 
 	def display(self, leaderboard, users, typ=0):
 		df = pd.DataFrame.from_dict(leaderboard, orient='index').reset_index().rename(columns={'index': 'id'})
@@ -394,7 +452,8 @@ class Leaderboard:
 		self.post_message(s1, channel, True)
 		self.post_message(s2, channel, True)
 		time.sleep(4)
-		self.post_message(self.get_progress(l, users, goal=13*4), channel, True, "progress.jpg") # 13 weeks of 4 pts as goal
+		self.post_message(self.get_teams(l), channel, True, "teams.jpg")
+		# self.post_message(self.get_progress(l, users, goal=13*4), channel, True, "progress.jpg") # 13 weeks of 4 pts as goal
 
 	def remind_users(self, channel, metric):
 		if not os.path.exists("people.json"):
