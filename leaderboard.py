@@ -204,8 +204,8 @@ class Leaderboard:
 		fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
 
 		bars = ax.bar(team_names, team_totals, color=list(plt.cm.tab10.colors[:5]))
-		ax.set_ylabel("Total Points")
-		ax.set_title("Team Total Points Comparison")
+		ax.set_ylabel("Average Points")
+		ax.set_title("Team Avg Points Comparison")
 
 		# Label
 		for bar in bars:
@@ -452,6 +452,7 @@ class Leaderboard:
 		self.post_message(s1, channel, True)
 		self.post_message(s2, channel, True)
 		time.sleep(4)
+		l = self.get_metrics(users, info)
 		self.post_message(self.get_teams(l), channel, True, "teams.jpg")
 		# self.post_message(self.get_progress(l, users, goal=13*4), channel, True, "progress.jpg") # 13 weeks of 4 pts as goal
 
