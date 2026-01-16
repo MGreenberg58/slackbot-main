@@ -39,11 +39,11 @@ class Leaderboard:
 		txt = msg["text"]
 		people = [msg['user']] + re.findall("<@([^>]+)>", txt)
 		throw = sum([int(x) for x in re.findall("!throw ([0-9]+)", txt)])
-		gym = len(re.findall("!gym", txt))+len(re.findall("!cardio", txt))
-		gym += .5*len(re.findall("!upper", txt))+.5*len(re.findall("!recovery", txt))
+		gym = len(re.findall("!gym", txt)) + len(re.findall("!cardio", txt)) + .5*len(re.findall("!upper", txt)) + .5*len(re.findall("!recovery", txt))
 		workout = 1.5*len(re.findall("!workout", txt))
 		lift = 1.5*len(re.findall("!lift", txt))
-		return people, throw, gym, lift, workout
+		sauna = 0.01*len(re.findall("!sauna", txt))
+		return people, throw, gym, lift, workout, sauna
 
 	def get_progress(self, leaderboard, users, goal=4, metric=None, isWeekly=False, cap=False): # Weekly goal is 4 "points" if 60mins throwing is 2pts
 		total = 0.0
@@ -147,9 +147,9 @@ class Leaderboard:
 		for m in data:
 			try:
 				if info:
-					people,t,g,l,w = self.parse_message(m, info['start'])
+					people,t,g,l,w,s = self.parse_message(m, info['start'])
 				else:
-					people,t,g,l,w = self.parse_message(m, start_time, end_time)
+					people,t,g,l,w,s = self.parse_message(m, start_time, end_time)
 
 				for p in people:
 					if metrics == 'throw' or metrics is None:
@@ -167,6 +167,8 @@ class Leaderboard:
 					if combine_gym:
 						leaderboard[p]['gym'] += l
 						leaderboard[p]['gym'] += w
+					
+					leaderboard[p]['gym'] += s
 
 			except Exception as e:
 				logging.info(f"Invalid message {m} - {e}")
