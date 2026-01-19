@@ -455,8 +455,8 @@ class Leaderboard:
 		self.post_message(s2, channel, True)
 		time.sleep(4)
 		l = self.get_metrics(users, info)
-		self.post_message(self.get_teams(l), channel, True, "teams.jpg")
-		# self.post_message(self.get_progress(l, users, goal=13*4), channel, True, "progress.jpg") # 13 weeks of 4 pts as goal
+		# self.post_message(self.get_teams(l), channel, True, "teams.jpg")
+		self.post_message(self.get_progress(l, users, goal=13*4), channel, True, "progress.jpg") # 13 weeks of 4 pts as goal
 
 	def remind_users(self, channel, metric):
 		if not os.path.exists("people.json"):
