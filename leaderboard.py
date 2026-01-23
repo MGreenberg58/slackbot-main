@@ -45,7 +45,7 @@ class Leaderboard:
 		sauna = 0.01*len(re.findall("!sauna", txt))
 		return people, throw, gym, lift, workout, sauna
 
-	def get_progress(self, leaderboard, users, goal=4, metric=None, isWeekly=False, cap=False): # Weekly goal is 4 "points" if 60mins throwing is 2pts
+	def get_progress(self, leaderboard, users, goal=4.5, metric=None, isWeekly=False, cap=False): # Weekly goal is 4.5 "points" if 60mins throwing is 2pts
 		total = 0.0
 		for u in leaderboard:
 			gym_pts = leaderboard[u]["gym"]
