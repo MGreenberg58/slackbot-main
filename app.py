@@ -55,6 +55,7 @@ def get_leaderboard(ack, body, say, client):
             bot.write(df)
             leaderboard.remind_users(channel_id, 'throw')
             leaderboard.remind_users(channel_id, 'lift')
+            leaderboard.remind_users(channel_id, 'workout')
             say(f"<@{user_id}>, requirements displayed")
         except Exception as e:
             client.chat_postEphemeral(
