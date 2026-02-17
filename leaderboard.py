@@ -38,7 +38,7 @@ class Leaderboard:
 			return [],0,0
 		txt = msg["text"]
 		people = [msg['user']] + re.findall("<@([^>]+)>", txt)
-		throw = sum([int(x) for x in re.findall("!throw ([0-9]+)", txt)])
+		throw = sum([int(x) for x in re.findall("!throw (-?[0-9]+)", txt)])
 		gym = len(re.findall("!gym", txt)) + len(re.findall("!cardio", txt)) + .5*len(re.findall("!upper", txt)) + .5*len(re.findall("!recovery", txt))
 		workout = 1.5*len(re.findall("!workout", txt))
 		lift = 1.5*len(re.findall("!lift", txt))
