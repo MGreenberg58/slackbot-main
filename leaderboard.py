@@ -276,9 +276,9 @@ class Leaderboard:
 			if row[key] > 0:
 				i += 1
 				if typ == 0:
-					text += f"*{i}. {row['name']}* with {row['throw']} minutes\n"
+					text += f"*{i}. {row['name']}* with {round(row['throw'], 3)} minutes\n"
 				else:
-					text += f"*{i}. {row['name']}* with {row['gym']} points\n"
+					text += f"*{i}. {row['name']}* with {round(row['gym'], 3)} points\n"
 
 		return text
 
