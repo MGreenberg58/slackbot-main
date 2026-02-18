@@ -25,7 +25,7 @@ def get_leaderboard(ack, body, say, client):
         
     if channel_id.startswith("D") or channel_id == CAPTAINS_CHANNEL:
         try:
-            df = bot.paginate(WORKOUT_CHANNEL, 1)
+            df = bot.paginate(WORKOUT_CHANNEL, 7)
             bot.write(df)
             leaderboard.display_leaderboard(channel_id)
             say(f"<@{user_id}>, leaderboard displayed")

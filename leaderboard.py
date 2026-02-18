@@ -271,7 +271,7 @@ class Leaderboard:
 		
 		i = 0
 		key = ['throw','gym'][typ]
-		df = df.sort_values(key,ascending=False)
+		df = df.sort_values(key, ascending=False)
 		for ind,row in df.iterrows():
 			if row[key] > 0:
 				i += 1
